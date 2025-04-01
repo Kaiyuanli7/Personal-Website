@@ -1,8 +1,34 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Hide default cursor globally */
+html, body, * {
+  cursor: none !important;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Ensure interactive elements don't show default cursor */
+a, button, input, textarea, select, [role="button"] {
+  cursor: none !important;
+}
+
+/* Override any other cursor styles */
+* {
+  cursor: none !important;
+}
+
+/* Force cursor: none on the root */
+:root {
+  cursor: none !important;
+}
 
 :root {
-  --background: #ffffff;
   --foreground: #171717;
+  --background: #ffffff;
 }
 
 @theme inline {
@@ -14,13 +40,14 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
     --foreground: #ededed;
+    --background: #0a0a0a;
   }
 }
 
 body {
-  background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--background);
+  min-height: 100vh;
+  font-family: var(--font-sans);
 }

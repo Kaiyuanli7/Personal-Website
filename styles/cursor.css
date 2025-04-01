@@ -1,0 +1,27 @@
+/* Hide default cursor */
+* {
+  cursor: none !important;
+}
+
+/* Ensure root elements don't show cursor */
+html, body {
+  cursor: none !important;
+}
+
+/* Hide cursor on interactive elements */
+a, button, input, textarea, select, [role="button"] {
+  cursor: none !important;
+}
+
+/* Force cursor: none on root */
+:root {
+  cursor: none !important;
+}
+
+/* Prevent text selection */
+* {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+} 
