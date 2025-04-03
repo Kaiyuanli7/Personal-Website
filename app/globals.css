@@ -21,6 +21,7 @@ a, button, input, textarea, select, [role="button"] {
   cursor: none !important;
 }
 
+
 /* Force cursor: none on the root */
 :root {
   cursor: none !important;

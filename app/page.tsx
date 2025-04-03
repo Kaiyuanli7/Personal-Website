@@ -6,6 +6,12 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { GlowingEffect } from "@/components/ui/glowing-effect"
 import { Box, Palette, Laptop, Sparkles, Code } from "lucide-react"
+import dynamic from 'next/dynamic'
+
+const Scene = dynamic(() => import('@/components/ui/StarsBackground'), {
+  ssr: false,
+  loading: () => null,
+})
 
 export default function LandingPage() {
   const router = useRouter()
@@ -52,8 +58,13 @@ export default function LandingPage() {
       ref={containerRef} 
       className="h-screen relative bg-gray-950 overflow-hidden"
     >
+      {/* Stars background */}
+      <div className="absolute inset-0 z-0">
+        <Scene />
+      </div>
+
       {/* Initial hero section */}
-      <div className="h-full w-full flex flex-col items-center justify-center overflow-hidden">
+      <div className="h-full w-full flex flex-col items-center justify-center overflow-hidden relative z-10">
         <motion.div
           style={{ 
             y: y,
@@ -112,15 +123,6 @@ export default function LandingPage() {
           </AnimatePresence>
         </motion.div>
       </div>
-      
-      {/* Background glow effect */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/3 left-1/4 w-96 h-96 bg-blue-500/10 rounded-full filter blur-[100px]" />
-        <div className="absolute bottom-1/3 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full filter blur-[100px]" />
-      </div>
-      
-      {/* Background mesh gradient */}
-      <div className="fixed inset-0 bg-gray-950 bg-opacity-60 z-[-1]" />
     </main>
   )
 }

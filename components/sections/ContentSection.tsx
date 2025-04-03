@@ -162,7 +162,7 @@ export default function ContentSection() {
   }, [lenis, activeSection, isScrolling])
 
   return (
-    <section ref={sectionRef} className="relative pt-0 pb-48 bg-gray-950 scroll-smooth">
+    <section ref={sectionRef} className="relative pt-0 pb-48 scroll-smooth">
       <div className="container-custom relative">
         {/* Intro Banner Section */}
         <div ref={introBannerRef} className="min-h-screen mb-32 snap-start">
@@ -255,13 +255,13 @@ export default function ContentSection() {
               
               {/* Scroll indicator */}
               <motion.div 
-                className="absolute bottom-12 left-1/2 transform -translate-x-1/2 flex flex-col items-center"
+                className="absolute left-1/2 -translate-x-1/2 bottom-8 md:bottom-12 flex flex-col items-center w-full max-w-[200px] mx-auto px-4"
                 style={{ opacity: useTransform(introBannerProgress, [0, 0.3], [1, 0]) }}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 2, duration: 0.8 }}
               >
-                <p className="text-white/70 mb-2 font-body">Scroll to explore</p>
+                <p className="text-white/70 mb-2 font-body text-center text-sm md:text-base">Scroll to explore</p>
                 <motion.div 
                   className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center p-1"
                   initial={{ opacity: 0.5 }}

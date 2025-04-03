@@ -131,36 +131,36 @@ export default function HeroSection() {
           <div className="absolute inset-0 z-0">
             {/* Tech icons floating with parallax */}
             <motion.div 
-              className="absolute top-1/4 left-1/4 w-20 h-20 bg-blue-600/20 rounded-xl flex items-center justify-center backdrop-blur-lg"
+              className="absolute top-1/4 left-[10%] md:left-1/4 w-16 h-16 md:w-20 md:h-20 bg-blue-600/20 rounded-xl flex items-center justify-center backdrop-blur-lg"
               style={{ y: y1, rotate: rotate1, scale: scale1, opacity: opacity1 }}
             >
-              <span className="text-white text-3xl">AI</span>
+              <span className="text-white text-xl md:text-3xl">AI</span>
             </motion.div>
             
             <motion.div 
-              className="absolute top-1/3 right-1/4 w-24 h-24 bg-purple-600/20 rounded-full flex items-center justify-center backdrop-blur-lg"
+              className="absolute top-1/3 right-[10%] md:right-1/4 w-16 h-16 md:w-24 md:h-24 bg-purple-600/20 rounded-full flex items-center justify-center backdrop-blur-lg"
               style={{ y: y2, rotate: rotate2, scale: scale2, opacity: opacity2 }}
             >
-              <span className="text-white text-3xl">ML</span>
+              <span className="text-white text-xl md:text-3xl">ML</span>
             </motion.div>
             
             <motion.div 
-              className="absolute bottom-1/4 left-1/3 w-28 h-28 bg-green-600/20 rounded-2xl flex items-center justify-center backdrop-blur-lg"
+              className="absolute bottom-1/3 md:bottom-1/4 left-[15%] md:left-1/3 w-20 h-20 md:w-28 md:h-28 bg-green-600/20 rounded-2xl flex items-center justify-center backdrop-blur-lg"
               style={{ y: y3, rotate: rotate1, scale: scale1, opacity: opacity1 }}
             >
-              <span className="text-white text-3xl">Web3</span>
+              <span className="text-white text-xl md:text-3xl">Web3</span>
             </motion.div>
             
             <motion.div 
-              className="absolute bottom-1/4 right-1/4 w-32 h-32 bg-yellow-600/20 rounded-3xl flex items-center justify-center backdrop-blur-lg"
+              className="absolute bottom-1/4 right-[15%] md:right-1/4 w-24 h-24 md:w-32 md:h-32 bg-yellow-600/20 rounded-3xl flex items-center justify-center backdrop-blur-lg"
               style={{ y: y1, rotate: rotate2, scale: scale2, opacity: opacity2 }}
             >
-              <span className="text-white text-3xl">Finance</span>
+              <span className="text-white text-xl md:text-3xl">Finance</span>
             </motion.div>
           </div>
           
-          {/* Animated lines connecting elements */}
-          <svg className="absolute inset-0 w-full h-full z-0 opacity-30">
+          {/* Animated lines connecting elements - adjusted for mobile */}
+          <svg className="absolute inset-0 w-full h-full z-0 opacity-30 hidden md:block">
             <motion.path 
               d="M200,100 C300,50 400,150 500,200" 
               stroke="rgba(255,255,255,0.3)" 
@@ -177,8 +177,8 @@ export default function HeroSection() {
             />
           </svg>
           
-          {/* Text overlay */}
-          <div className="absolute inset-0 flex items-center justify-center z-10">
+          {/* Text overlay - adjusted for mobile */}
+          <div className="absolute inset-0 flex items-center justify-center z-10 px-4">
             <motion.div 
               className="text-center"
               initial={{ opacity: 0, y: 20 }}
@@ -186,28 +186,28 @@ export default function HeroSection() {
               transition={{ delay: 0.2, duration: 0.8 }}
             >
               <motion.h2 
-                className="text-4xl md:text-5xl font-bold text-white mb-6"
+                className="text-2xl md:text-4xl lg:text-5xl font-bold text-white mb-6 max-w-[90vw] md:max-w-none mx-auto"
                 style={{ y: useTransform(scrollYProgress, [0, 1], [0, -50]) }}
               >
-                Bridging Innovation and Leadership
+                 "The best way to predict the future is to invent it." - Alan Kay
               </motion.h2>
               <motion.p 
-                className="text-xl text-white/80 max-w-2xl mx-auto"
+                className="text-lg md:text-xl text-white/80 max-w-2xl mx-auto px-4 md:px-0"
                 style={{ y: useTransform(scrollYProgress, [0, 1], [0, -30]) }}
               >
-                "The best way to predict the future is to invent it." - Alan Kay
+              
               </motion.p>
             </motion.div>
           </div>
           
-          {/* Decorative glowing orbs */}
+          {/* Decorative glowing orbs - adjusted for mobile */}
           <div className="absolute inset-0 overflow-hidden">
             <motion.div 
-              className="absolute top-1/4 left-1/2 w-64 h-64 rounded-full bg-blue-500/10 blur-3xl"
+              className="absolute top-1/4 left-1/2 w-32 md:w-64 h-32 md:h-64 rounded-full bg-blue-500/10 blur-3xl"
               style={{ x: useTransform(scrollYProgress, [0, 1], [0, -100]), scale: useTransform(scrollYProgress, [0, 1], [1, 1.5]) }}
             />
             <motion.div 
-              className="absolute bottom-1/3 left-1/4 w-80 h-80 rounded-full bg-purple-500/10 blur-3xl"
+              className="absolute bottom-1/3 left-1/4 w-40 md:w-80 h-40 md:h-80 rounded-full bg-purple-500/10 blur-3xl"
               style={{ x: useTransform(scrollYProgress, [0, 1], [0, 100]), scale: useTransform(scrollYProgress, [0, 1], [1, 0.7]) }}
             />
           </div>
