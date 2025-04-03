@@ -10,15 +10,19 @@
   },
   "dependencies": {
     "@react-spring/web": "^9.7.5",
+    "@react-three/drei": "^10.0.5",
+    "@react-three/fiber": "^9.1.1",
     "@studio-freight/lenis": "^1.0.42",
     "@tailwindcss/typography": "^0.5.16",
+    "@types/three": "^0.175.0",
     "framer-motion": "^11.0.3",
     "gsap": "^3.12.5",
     "lucide-react": "^0.487.0",
-    "next": "14.1.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "split-type": "^0.3.4"
+    "next": "^14.2.26",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "split-type": "^0.3.4",
+    "three": "^0.175.0"
   },
   "devDependencies": {
     "@types/node": "^20.11.16",

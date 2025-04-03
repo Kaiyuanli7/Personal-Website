@@ -129,8 +129,9 @@ export const CardItem = ({
     }
   }, [isMouseEntered, translateX, translateY, translateZ, rotateX, rotateY, rotateZ]);
 
+  const Component = Tag;
   return (
-    <Tag
+    <div
       ref={ref}
       className={cn("transition-all duration-200 ease-linear", className)}
       style={{
@@ -139,7 +140,7 @@ export const CardItem = ({
       {...rest}
     >
       {children}
-    </Tag>
+    </div>
   );
 };
 
