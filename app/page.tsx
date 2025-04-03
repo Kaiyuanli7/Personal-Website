@@ -4,19 +4,14 @@ import { useRef, useEffect, useState } from 'react'
 import { motion, useMotionValue, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import dynamic from 'next/dynamic'
-
-// Dynamically import useScroll and useTransform - these are only needed after initial render
-const MotionUtils = dynamic(() => import('@/hooks/motionHooks'), {
-  ssr: false,
-});
+import { GlowingEffect } from "@/components/ui/glowing-effect"
+import { Box, Palette, Laptop, Sparkles, Code } from "lucide-react"
 
 export default function LandingPage() {
   const router = useRouter()
   const containerRef = useRef<HTMLDivElement>(null)
   const [windowHeight, setWindowHeight] = useState(0)
   const [hasScrolled, setHasScrolled] = useState(false)
-  const [motionUtils, setMotionUtils] = useState(null)
   
   // Text state management
   const [showOptions, setShowOptions] = useState(false)
@@ -42,11 +37,6 @@ export default function LandingPage() {
       const timer = setTimeout(() => {
         setShowOptions(true);
       }, 500);
-      
-      // Lazy load framer-motion utilities after initial render
-      import('@/hooks/motionHooks').then((mod) => {
-        setMotionUtils(mod.default)
-      })
       
       return () => {
         window.removeEventListener('resize', handleResize)
@@ -83,65 +73,39 @@ export default function LandingPage() {
               >
                 <div className="max-w-7xl w-full">
                   <motion.div
-                    className="text-center mb-16"
+                    className="text-center mb-10"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 1, delay: 0.5 }}
                   >
-                    <h2 className="text-6xl md:text-8xl font-bold text-white mb-6">
-                      Viewing<br />Experience
-                    </h2>
+                    <h1 className="text-6xl md:text-6xl font-bold text-white mb-2">
+                      Viewing Experience
+                    </h1>
                   </motion.div>
                   
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mt-12">
-                    {/* Professional Version */}
-                    <motion.div
-                      initial={{ opacity: 0, y: 30 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.8, delay: 0.7 }}
-                      whileHover={{ scale: 1.05, rotateY: 5 }}
-                      className="group perspective-1000"
-                    >
-                      <Link href="/professional" className="block transform-gpu">
-                        <div className="bg-white/5 hover:bg-white/10 backdrop-blur-sm rounded-2xl p-8 transition-all duration-300 border border-white/10 group-hover:border-white/20 transform group-hover:-rotate-y-5 group-hover:translate-z-10">
-                          <h2 className="text-4xl font-bold text-white mb-4">Professional</h2>
-                          <p className="text-gray-300 mb-6">
-                            A clean, traditional portfolio showcasing my experience, skills, and achievements in a formal manner.
-                          </p>
-                          <div className="flex items-center text-white/80 group-hover:text-white transition-colors">
-                            <span>View Professional Portfolio</span>
-                            <svg className="w-5 h-5 ml-2 transform group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                            </svg>
-                          </div>
-                        </div>
-                      </Link>
-                    </motion.div>
+                  <ul className="grid grid-cols-1 md:grid-cols-12 md:grid-rows-2 gap-4 lg:gap-6 py-8">
+                    {/* Professional Portfolio Card */}
+                    <GridItem
+                      area="md:[grid-area:1/1/3/7]"
+                      icon={<Box className="h-4 w-4 text-white" />}
+                      title="Professional"
+                      description="A clean, traditional portfolio showcasing my skills, experience, and achievements in a formal manner."
+                      href="/professional"
+                      buttonText="View Professional →"
+                    />
+                    
+                    {/* Casual Portfolio Card */}
+                    <GridItem
+                      area="md:[grid-area:1/7/3/13]"
+                      icon={<Palette className="h-4 w-4 text-white" />}
+                      title="Casual"
+                      description="An experimental, interactive experience with modern animations and creative design elements."
+                      href="/casual"
+                      buttonText="View Casual →"
+                    />
+                    
 
-                    {/* Casual Version */}
-                    <motion.div
-                      initial={{ opacity: 0, y: 30 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.8, delay: 0.9 }}
-                      whileHover={{ scale: 1.05, rotateY: -5 }}
-                      className="group perspective-1000"
-                    >
-                      <Link href="/casual" className="block transform-gpu">
-                        <div className="bg-white/5 hover:bg-white/10 backdrop-blur-sm rounded-2xl p-8 transition-all duration-300 border border-white/10 group-hover:border-white/20 transform group-hover:rotate-y-5 group-hover:translate-z-10">
-                          <h2 className="text-4xl font-bold text-white mb-4">Casual</h2>
-                          <p className="text-gray-300 mb-6">
-                            An experimental, interactive experience with modern animations and creative design elements.
-                          </p>
-                          <div className="flex items-center text-white/80 group-hover:text-white transition-colors">
-                            <span>View Casual Portfolio</span>
-                            <svg className="w-5 h-5 ml-2 transform group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                            </svg>
-                          </div>
-                        </div>
-                      </Link>
-                    </motion.div>
-                  </div>
+                  </ul>
                 </div>
               </motion.div>
             )}
@@ -160,3 +124,48 @@ export default function LandingPage() {
     </main>
   )
 }
+
+interface GridItemProps {
+  area: string;
+  icon: React.ReactNode;
+  title: string;
+  description: React.ReactNode;
+  href: string;
+  buttonText: string;
+}
+
+const GridItem = ({ area, icon, title, description, href, buttonText }: GridItemProps) => {
+  return (
+    <li className={`min-h-[14rem] list-none ${area}`}>
+      <Link href={href} className="block h-full">
+        <div className="relative h-full rounded-2xl border border-white/10 p-2 transition-all duration-300 hover:border-white/20">
+          <GlowingEffect
+            spread={40}
+            glow={true}
+            disabled={false}
+            proximity={64}
+            inactiveZone={0.01}
+          />
+          <div className="relative flex h-full flex-col justify-between gap-6 overflow-hidden rounded-xl border-white/10 p-6 bg-black/40 backdrop-blur-sm">
+            <div className="relative flex flex-1 flex-col justify-between gap-3">
+              <div className="w-fit rounded-lg border border-white/20 p-2 bg-white/5">
+                {icon}
+              </div>
+              <div className="space-y-3">
+                <h3 className="pt-0.5 text-xl font-semibold font-sans tracking-tight md:text-2xl text-white">
+                  {title}
+                </h3>
+                <p className="font-sans text-sm md:text-base text-white/70">
+                  {description}
+                </p>
+              </div>
+              <div className="text-white/80 hover:text-white text-sm font-medium transition-colors">
+                {buttonText}
+              </div>
+            </div>
+          </div>
+        </div>
+      </Link>
+    </li>
+  );
+};

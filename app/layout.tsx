@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Titillium_Web } from "next/font/google";
 import localFont from 'next/font/local';
 import dynamic from 'next/dynamic';
 import "./globals.css";
@@ -29,7 +29,12 @@ const ContactOverlay = dynamic(() => import('@/components/ui/ContactOverlay'), {
   loading: () => <div className="hidden">Loading contact form...</div>,
 });
 
-const inter = Inter({ subsets: ["latin"] });
+const titillium = Titillium_Web({ 
+  subsets: ["latin"],
+  weight: ['200', '300', '400', '600', '700', '900'],
+  variable: '--font-titillium'
+});
+
 const luxurious = localFont({
   src: '../lib/luxuriousScript-Regular.ttf',
   variable: '--font-luxurious',
@@ -47,7 +52,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} ${luxurious.variable}`}>
+      <body className={`${titillium.className} ${luxurious.variable} ${titillium.variable}`}>
         <ScrollProvider>
           <CursorProvider>
             <ContactProvider>

@@ -39,10 +39,10 @@ export function CodeCard() {
                 <span className="text-green-400">name</span>: <span className="text-yellow-300">'Kaiyuan Li'</span>,
               </div>
               <div className="ml-4 mb-1">
-                <span className="text-green-400">skills</span>: [<span className="text-yellow-300">'JS'</span>, <span className="text-yellow-300">'Python'</span>, <span className="text-yellow-300">'React'</span>],
+                <span className="text-green-400">skills</span>: [<span className="text-yellow-300">'JS'</span>, <span className="text-yellow-300">'Python'</span>, <span className="text-yellow-300">'Java'</span>],
               </div>
               <div className="ml-4 mb-1">
-                <span className="text-green-400">passion</span>: <span className="text-yellow-300">'Building amazing experiences'</span>
+                <span className="text-green-400">hobbies</span>: [<span className="text-yellow-300">'Music'</span>, <span className="text-yellow-300">'Gaming'</span>, <span className="text-yellow-300">'Coding'</span>]
               </div>
               <div>
                 {"}"};
