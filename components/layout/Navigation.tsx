@@ -3,100 +3,112 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState, useEffect, useRef } from 'react'
+import AnimatedText from '../ui/AnimatedText'
+import { useContact } from '@/context/ContactContext'
 
 export default function Navigation() {
   const pathname = usePathname()
   const [isOnDarkBackground, setIsOnDarkBackground] = useState(true)
+  const [isVisible, setIsVisible] = useState(false)
   const navRef = useRef<HTMLDivElement>(null)
+  const [hoveredLink, setHoveredLink] = useState<string | null>(null)
+  const { openContact } = useContact()
   
   useEffect(() => {
-    // Simplified approach: directly use scroll position to determine background
-    const detectBackgroundFromScroll = () => {
-      // On home page, we check if we've scrolled enough to hit the white content section
+    // Show navigation immediately on non-home pages
+    if (pathname !== '/') {
+      setIsVisible(true)
+      return
+    }
+
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY
+      const viewportHeight = window.innerHeight
+
+      // On home page, show after 20% of viewport height is scrolled
       if (pathname === '/') {
-        // Get viewport height
-        const viewportHeight = window.innerHeight
-        const scrollPosition = window.scrollY
-        
-        // Check if white section is visible based on known layout
-        // ContentSection starts roughly at viewport height
+        setIsVisible(scrollPosition > viewportHeight * 0.2)
+      }
+
+      // Background detection logic
+      if (pathname === '/') {
         const isInWhiteSection = scrollPosition > (viewportHeight * 0.8)
-        
-        // Update state
         setIsOnDarkBackground(!isInWhiteSection)
       } else {
-        // On other pages, we're typically starting with a dark background
-        // You might need custom logic per page if they have different layouts
-        const scrollPosition = window.scrollY
         setIsOnDarkBackground(scrollPosition < 200)
       }
     }
     
-    // Initial detection
-    detectBackgroundFromScroll()
+    // Initial check
+    handleScroll()
     
-    // Set up scroll listener
-    window.addEventListener('scroll', detectBackgroundFromScroll)
-    window.addEventListener('resize', detectBackgroundFromScroll)
-    
-    // Cleanup
-    return () => {
-      window.removeEventListener('scroll', detectBackgroundFromScroll)
-      window.removeEventListener('resize', detectBackgroundFromScroll)
-    }
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
   }, [pathname])
   
   return (
-    <nav ref={navRef} className="fixed top-0 left-0 right-0 z-50">
+    <nav 
+      ref={navRef} 
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+        isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-full'
+      }`}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16">
-          <div className="flex items-center">
+        <div className="flex justify-between h-16 relative">
+          {/* Left side */}
+          <div className="flex-1 flex items-center">
             <Link 
               href="/" 
-              className={`text-4xl font-luxurious tracking-wide transition-colors duration-300 ${
-                isOnDarkBackground ? 'text-white' : 'text-black'
-              }`}
+              className={`text-4xl font-luxurious tracking-wide transition-colors duration-300 overflow-visible`}
+              onMouseEnter={() => setHoveredLink('home')}
+              onMouseLeave={() => setHoveredLink(null)}
             >
-              Kai
+              <AnimatedText
+                text="Kai"
+                isHovered={hoveredLink === 'home'}
+                className={isOnDarkBackground ? 'text-white' : 'text-black'}
+              />
             </Link>
           </div>
-          <div className="flex items-center space-x-8">
-            <Link
+          
+          {/* Right side */}
+          <div className="flex-1 flex items-center justify-end gap-8">
+            <Link 
               href="/about"
-              className={`transition-all duration-300 hover:opacity-80 ${
-                isOnDarkBackground 
-                  ? 'text-white' 
-                  : 'text-black'
-              } ${
-                pathname === '/about' ? 'font-medium' : 'opacity-80'
-              }`}
+              className={`text-lg transition-colors duration-300`}
+              onMouseEnter={() => setHoveredLink('about')}
+              onMouseLeave={() => setHoveredLink(null)}
             >
-              About
+              <AnimatedText
+                text="About"
+                isHovered={hoveredLink === 'about'}
+                className={isOnDarkBackground ? 'text-white' : 'text-black'}
+              />
             </Link>
-            <Link
+            <Link 
               href="/projects"
-              className={`transition-all duration-300 hover:opacity-80 ${
-                isOnDarkBackground 
-                  ? 'text-white' 
-                  : 'text-black'
-              } ${
-                pathname === '/projects' ? 'font-medium' : 'opacity-80'
-              }`}
+              className={`text-lg transition-colors duration-300`}
+              onMouseEnter={() => setHoveredLink('projects')}
+              onMouseLeave={() => setHoveredLink(null)}
             >
-              Projects
+              <AnimatedText
+                text="Projects"
+                isHovered={hoveredLink === 'projects'}
+                className={isOnDarkBackground ? 'text-white' : 'text-black'}
+              />
             </Link>
-            <Link
-              href="/contact"
-              className={`transition-all duration-300 hover:opacity-80 ${
-                isOnDarkBackground 
-                  ? 'text-white' 
-                  : 'text-black'
-              } ${
-                pathname === '/contact' ? 'font-medium' : 'opacity-80'
-              }`}
+            <button 
+              onClick={openContact}
+              className={`text-lg transition-colors duration-300`}
+              onMouseEnter={() => setHoveredLink('contact')}
+              onMouseLeave={() => setHoveredLink(null)}
             >
-              Contact
-            </Link>
+              <AnimatedText
+                text="Contact"
+                isHovered={hoveredLink === 'contact'}
+                className={isOnDarkBackground ? 'text-white' : 'text-black'}
+              />
+            </button>
           </div>
         </div>
       </div>

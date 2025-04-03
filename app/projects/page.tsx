@@ -1,19 +1,21 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
-import { motion, useMotionTemplate, useMotionValue, animate, useScroll, useTransform } from 'framer-motion'
-import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { useEffect, useRef, useState } from 'react'
+import { motion, useMotionValue, useMotionTemplate, animate, useScroll, useTransform } from 'framer-motion'
 import { useScroll as useLenisScroll } from '@/context/ScrollContext'
 import dynamic from 'next/dynamic'
 import Image from 'next/image'
 
+// Dynamically import heavy components
 const StarsBackground = dynamic(() => import('@/components/ui/StarsBackground'), {
   ssr: false,
   loading: () => null,
 })
 
-gsap.registerPlugin(ScrollTrigger)
+// Dynamically import animation utilities (GSAP and heavy framer-motion functions)
+const AnimationUtils = dynamic(() => import('@/hooks/animationUtils'), { 
+  ssr: false 
+})
 
 const COLORS = ["#13FFAA", "#1E67C6", "#CE84CF", "#DD335C"]
 
@@ -53,50 +55,81 @@ export default function Projects() {
   const { lenis } = useLenisScroll()
   const sectionRef = useRef<HTMLElement>(null)
   const color = useMotionValue(COLORS[0])
+  const [animationUtils, setAnimationUtils] = useState(null)
   
   // Setup refs for project sections to apply parallax
   const headerRef = useRef<HTMLDivElement>(null)
   const projectsRef = useRef<HTMLDivElement>(null)
   
-  // Setup parallax scrolling for the projects
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start start", "end start"]
-  })
-  
-  // Create parallax scroll effects for sections
-  const headerY = useTransform(scrollYProgress, [0, 0.2], [0, -50])
-  const headerOpacity = useTransform(scrollYProgress, [0, 0.2, 0.3], [1, 1, 0])
+  // Values to store motion values created after animation utils load
+  const [scrollProgress, setScrollProgress] = useState(null)
+  const [headerY, setHeaderY] = useState(null)
+  const [headerOpacity, setHeaderOpacity] = useState(null)
+  const [backgroundImage, setBackgroundImage] = useState(null)
+  const [boxShadow, setBoxShadow] = useState(null)
   
   useEffect(() => {
     if (!sectionRef.current) return
+    
+    // Lazy-load animation utilities
+    const loadAnimationUtils = async () => {
+      // Import animation utilities
+      const utils = await import('@/hooks/animationUtils')
+      setAnimationUtils(utils.default)
+      
+      // Initialize GSAP
+      const { gsap, ScrollTrigger, animate, useMotionTemplate, useTransform, useScroll } = utils.default
+      
+      gsap.registerPlugin(ScrollTrigger)
+      
+      // Initially hide the section
+      gsap.set(sectionRef.current, {
+        opacity: 0,
+        y: 50,
+      })
 
-    // Initially hide the section
-    gsap.set(sectionRef.current, {
-      opacity: 0,
-      y: 50,
-    })
+      // Show the section when page loads
+      gsap.to(sectionRef.current, {
+        opacity: 1,
+        y: 0,
+        duration: 1,
+        ease: 'power3.out',
+      })
 
-    // Show the section when page loads
-    gsap.to(sectionRef.current, {
-      opacity: 1,
-      y: 0,
-      duration: 1,
-      ease: 'power3.out',
-    })
-
-    // Animate the aurora color
-    animate(color, COLORS, {
-      ease: "easeInOut",
-      duration: 10,
-      repeat: Infinity,
-      repeatType: "mirror",
-    })
+      // Animate the aurora color
+      animate(color, COLORS, {
+        ease: "easeInOut",
+        duration: 10,
+        repeat: Infinity,
+        repeatType: "mirror",
+      })
+      
+      // Setup scrolling animations now that we have the utilities
+      if (sectionRef.current) {
+        const { scrollYProgress } = useScroll({
+          target: sectionRef,
+          offset: ["start start", "end start"]
+        })
+        
+        setScrollProgress(scrollYProgress)
+        setHeaderY(useTransform(scrollYProgress, [0, 0.2], [0, -50]))
+        setHeaderOpacity(useTransform(scrollYProgress, [0, 0.2, 0.3], [1, 1, 0]))
+        setBackgroundImage(useMotionTemplate`radial-gradient(125% 125% at 50% 0%, #020617 50%, ${color})`)
+        setBoxShadow(useMotionTemplate`0px 4px 24px ${color}`)
+      }
+    }
+    
+    loadAnimationUtils()
   }, [lenis, color])
 
-  const backgroundImage = useMotionTemplate`radial-gradient(125% 125% at 50% 0%, #020617 50%, ${color})`
-  const border = useMotionTemplate`1px solid ${color}`
-  const boxShadow = useMotionTemplate`0px 4px 24px ${color}`
+  // If animation utilities haven't loaded yet, show a simple loading state
+  if (!backgroundImage) {
+    return (
+      <div className="min-h-screen bg-gray-950 flex items-center justify-center">
+        <div className="text-white text-xl">Loading projects...</div>
+      </div>
+    )
+  }
 
   return (
     <motion.main

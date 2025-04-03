@@ -2,10 +2,19 @@
 
 import { useEffect, useState, useRef } from 'react'
 import { motion, useMotionValue } from 'framer-motion'
-import { useCursor } from '@/context/CursorContext'
+import { useCursor, CURSOR_COLORS } from '@/context/CursorContext'
+
+// Directly define the cursor colors for proper Tailwind compilation
+const staticColors = {
+  'border-white': true,
+  'border-blue-500': true,
+  'border-green-500': true,
+  'border-purple-500': true,
+  'border-pink-500': true,
+}
 
 export default function Cursor() {
-  const { isHovering, setIsHovering } = useCursor()
+  const { isHovering, setIsHovering, cursorEnabled, cursorColor, trailEnabled } = useCursor()
   const cursorRef = useRef<HTMLDivElement>(null)
   const [targetShape, setTargetShape] = useState({ width: 0, height: 0, borderRadius: 0 })
   const [buttonCenter, setButtonCenter] = useState({ x: 0, y: 0 })
@@ -32,109 +41,26 @@ export default function Cursor() {
       cursorY.set(e.clientY)
     }
     
-    const handleMouseEnter = (e: MouseEvent) => {
-      const target = e.target as HTMLElement
+    // Only add event listeners if cursor is enabled
+    if (cursorEnabled) {
+      window.addEventListener('mousemove', moveCursor)
+      document.addEventListener('mouseover', handleMouseEnter)
+      window.addEventListener('scroll', handleScroll, { passive: true })
       
-      // Check if element is interactive
-      const isInteractive = 
-        target.tagName.toLowerCase() === 'a' || 
-        target.tagName.toLowerCase() === 'button' ||
-        target.classList.contains('cursor-hover') ||
-        target.closest('a') !== null ||
-        target.closest('button') !== null ||
-        target.closest('.cursor-hover') !== null
-      
-      if (isInteractive) {
-        // Store the hovered element
-        lastHoveredElement.current = target
-        
-        // Get the target element's dimensions and styles
-        const rect = target.getBoundingClientRect()
-        const computedStyle = window.getComputedStyle(target)
-        
-        // Get all relevant styles for accurate shape
-        const borderRadius = computedStyle.borderRadius
-        const paddingTop = parseFloat(computedStyle.paddingTop)
-        const paddingRight = parseFloat(computedStyle.paddingRight)
-        const paddingBottom = parseFloat(computedStyle.paddingBottom)
-        const paddingLeft = parseFloat(computedStyle.paddingLeft)
-        const borderTop = parseFloat(computedStyle.borderTopWidth)
-        const borderRight = parseFloat(computedStyle.borderRightWidth)
-        const borderBottom = parseFloat(computedStyle.borderBottomWidth)
-        const borderLeft = parseFloat(computedStyle.borderLeftWidth)
-        
-        // Calculate total dimensions including padding and border
-        const totalWidth = rect.width + paddingLeft + paddingRight + borderLeft + borderRight
-        const totalHeight = rect.height + paddingTop + paddingBottom + borderTop + borderBottom
-        
-        // Add extra padding to make the outline larger
-        const outlinePadding = 4 // pixels of extra padding
-        const outlineWidth = totalWidth + (outlinePadding * 2)
-        const outlineHeight = totalHeight + (outlinePadding * 2)
-        
-        // Calculate center position of the target
-        const centerX = rect.left + (rect.width / 2)
-        const centerY = rect.top + (rect.height / 2)
-        
-        // Parse border radius values (handle different units)
-        const parseBorderRadius = (value: string) => {
-          if (value.includes('px')) return parseFloat(value)
-          if (value.includes('%')) return parseFloat(value) * Math.min(totalWidth, totalHeight) / 100
-          return parseFloat(value)
+      // Ensure cursor is visible when it enters the window
+      document.addEventListener('mouseenter', () => {
+        if (cursorRef.current) {
+          cursorRef.current.style.opacity = '1'
         }
-        
-        // Handle different border radius formats (single value, multiple values)
-        let borderRadiusValue = 0
-        if (borderRadius.includes(' ')) {
-          // If multiple values, use the largest one
-          borderRadiusValue = Math.max(...borderRadius.split(' ').map(parseBorderRadius))
-        } else {
-          borderRadiusValue = parseBorderRadius(borderRadius)
-        }
-        
-        // Update target shape and position
-        setTargetShape({
-          width: outlineWidth,
-          height: outlineHeight,
-          borderRadius: borderRadiusValue + outlinePadding // Increase border radius to match larger size
-        })
-        
-        // Set button center position
-        setButtonCenter({ x: centerX, y: centerY })
-      } else {
-        setTargetShape({ width: 6, height: 6, borderRadius: 50 })
-        lastHoveredElement.current = null
-      }
+      })
       
-      // Only update if the hover state is actually changing
-      if (isInteractive !== isHovering) {
-        setIsHovering(isInteractive)
-      }
+      // Hide cursor when it leaves the window
+      document.addEventListener('mouseleave', () => {
+        if (cursorRef.current) {
+          cursorRef.current.style.opacity = '0'
+        }
+      })
     }
-
-    const handleScroll = () => {
-      if (lastHoveredElement.current && isHovering) {
-        updateButtonPosition(lastHoveredElement.current)
-      }
-    }
-    
-    window.addEventListener('mousemove', moveCursor)
-    document.addEventListener('mouseover', handleMouseEnter)
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    
-    // Ensure cursor is visible when it enters the window
-    document.addEventListener('mouseenter', () => {
-      if (cursorRef.current) {
-        cursorRef.current.style.opacity = '1'
-      }
-    })
-    
-    // Hide cursor when it leaves the window
-    document.addEventListener('mouseleave', () => {
-      if (cursorRef.current) {
-        cursorRef.current.style.opacity = '0'
-      }
-    })
     
     return () => {
       window.removeEventListener('mousemove', moveCursor)
@@ -143,12 +69,147 @@ export default function Cursor() {
       document.removeEventListener('mouseenter', () => {})
       document.removeEventListener('mouseleave', () => {})
     }
-  }, [cursorX, cursorY, isHovering, setIsHovering])
+  }, [cursorX, cursorY, isHovering, setIsHovering, cursorEnabled])
 
-  // Don't render on touch devices
-  if (typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches) {
-    return null
+  const handleMouseEnter = (e: MouseEvent) => {
+    const target = e.target as HTMLElement
+    
+    // Check if element is interactive
+    const isInteractive = 
+      target.tagName.toLowerCase() === 'a' || 
+      target.tagName.toLowerCase() === 'button' ||
+      target.classList.contains('cursor-hover') ||
+      target.closest('a') !== null ||
+      target.closest('button') !== null ||
+      target.closest('.cursor-hover') !== null
+    
+    if (isInteractive) {
+      // Store the hovered element
+      lastHoveredElement.current = target
+      
+      // Get the target element's dimensions and styles
+      const rect = target.getBoundingClientRect()
+      const computedStyle = window.getComputedStyle(target)
+      
+      // Get all relevant styles for accurate shape
+      const borderRadius = computedStyle.borderRadius
+      const paddingTop = parseFloat(computedStyle.paddingTop)
+      const paddingRight = parseFloat(computedStyle.paddingRight)
+      const paddingBottom = parseFloat(computedStyle.paddingBottom)
+      const paddingLeft = parseFloat(computedStyle.paddingLeft)
+      const borderTop = parseFloat(computedStyle.borderTopWidth)
+      const borderRight = parseFloat(computedStyle.borderRightWidth)
+      const borderBottom = parseFloat(computedStyle.borderBottomWidth)
+      const borderLeft = parseFloat(computedStyle.borderLeftWidth)
+      
+      // Calculate total dimensions including padding and border
+      const totalWidth = rect.width + paddingLeft + paddingRight + borderLeft + borderRight
+      const totalHeight = rect.height + paddingTop + paddingBottom + borderTop + borderBottom
+      
+      // Add extra padding to make the outline larger
+      const outlinePadding = 4 // pixels of extra padding
+      const outlineWidth = totalWidth + (outlinePadding * 2)
+      const outlineHeight = totalHeight + (outlinePadding * 2)
+      
+      // Calculate center position of the target
+      const centerX = rect.left + (rect.width / 2)
+      const centerY = rect.top + (rect.height / 2)
+      
+      // Parse border radius values (handle different units)
+      const parseBorderRadius = (value: string) => {
+        if (value.includes('px')) return parseFloat(value)
+        if (value.includes('%')) return parseFloat(value) * Math.min(totalWidth, totalHeight) / 100
+        if (value.includes('rem')) return parseFloat(value) * 16 // Assuming 1rem = 16px
+        if (value.includes('em')) {
+          const parentFontSize = parseFloat(window.getComputedStyle(target.parentElement || document.body).fontSize)
+          return parseFloat(value) * parentFontSize
+        }
+        return parseFloat(value)
+      }
+      
+      // Handle different border radius formats (single value, multiple values)
+      let borderRadiusValue = 0
+      if (borderRadius.includes(' ')) {
+        // For multiple values, extract all values and use them for specific corners
+        const radiusValues = borderRadius.split(' ').map(parseBorderRadius)
+        // Use max value for now, but ideally we'd apply each corner radius separately
+        borderRadiusValue = Math.max(...radiusValues)
+      } else {
+        borderRadiusValue = parseBorderRadius(borderRadius)
+      }
+
+      // Add a bit more precision to border radius for fully rounded elements
+      const isFullyRounded = borderRadiusValue >= Math.min(totalWidth, totalHeight) / 2
+      const finalBorderRadius = isFullyRounded 
+        ? Math.min(totalWidth, totalHeight) / 2 + outlinePadding
+        : borderRadiusValue + outlinePadding
+      
+      // Update target shape and position
+      setTargetShape({
+        width: outlineWidth,
+        height: outlineHeight,
+        borderRadius: finalBorderRadius
+      })
+      
+      // Set button center position
+      setButtonCenter({ x: centerX, y: centerY })
+    } else {
+      setTargetShape({ width: 6, height: 6, borderRadius: 50 })
+      lastHoveredElement.current = null
+    }
+    
+    // Only update if the hover state is actually changing
+    if (isInteractive !== isHovering) {
+      setIsHovering(isInteractive)
+    }
   }
+
+  const handleScroll = () => {
+    if (lastHoveredElement.current && isHovering) {
+      updateButtonPosition(lastHoveredElement.current)
+    }
+  }
+
+  // Always add global cursor styles
+  const globalCursorStyles = (
+    <style jsx global>{`
+      * {
+        cursor: ${!trailEnabled ? 'default' : 'none'} !important;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+      body {
+        cursor: ${!trailEnabled ? 'default' : 'none'} !important;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+      html {
+        cursor: ${!trailEnabled ? 'default' : 'none'} !important;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+      a, button, input, textarea, select {
+        cursor: ${!trailEnabled ? 'pointer' : 'none'} !important;
+      }
+    `}</style>
+  );
+
+  // Don't render cursor elements on touch devices or if cursor is disabled
+  if (
+    (typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches) ||
+    !cursorEnabled
+  ) {
+    return globalCursorStyles;
+  }
+
+  // Get the current cursor color class from context
+  const colorClass = CURSOR_COLORS[cursorColor] || 'border-white'
 
   return (
     <>
@@ -167,7 +228,7 @@ export default function Cursor() {
         animate={{
           width: targetShape.width,
           height: targetShape.height,
-          borderRadius: targetShape.borderRadius,
+          borderRadius: `${targetShape.borderRadius}px`,
           opacity: isHovering ? 1 : 0,
         }}
         transition={{
@@ -176,10 +237,13 @@ export default function Cursor() {
           ease: 'easeInOut'
         }}
       >
-        <div className="w-full h-full border border-white rounded-full"></div>
+        <div 
+          className={`w-full h-full border ${colorClass}`} 
+          style={{ borderRadius: `${targetShape.borderRadius}px` }}
+        />
       </motion.div>
 
-      {/* Small outline around the red dot */}
+      {/* Small outline around the cursor */}
       <motion.div
         className="fixed top-0 left-0 pointer-events-none z-[9998] mix-blend-difference"
         style={{
@@ -201,39 +265,13 @@ export default function Cursor() {
           ease: 'easeInOut'
         }}
       >
-        <div className="w-full h-full border border-white rounded-full"></div>
+        <div className={`w-full h-full border rounded-full ${colorClass}`} />
       </motion.div>
 
-      <style jsx global>{`
-        * {
-          cursor: none !important;
-          -webkit-user-select: none;
-          -moz-user-select: none;
-          -ms-user-select: none;
-          user-select: none;
-        }
-        body {
-          cursor: none !important;
-          -webkit-user-select: none;
-          -moz-user-select: none;
-          -ms-user-select: none;
-          user-select: none;
-        }
-        html {
-          cursor: none !important;
-          -webkit-user-select: none;
-          -moz-user-select: none;
-          -ms-user-select: none;
-          user-select: none;
-        }
-        a, button, input, textarea, select {
-          cursor: none !important;
-          -webkit-user-select: none;
-          -moz-user-select: none;
-          -ms-user-select: none;
-          user-select: none;
-        }
-      `}</style>
+      {/* Add all possible color classes for Tailwind to detect */}
+      <div className="hidden border-white border-blue-500 border-green-500 border-purple-500 border-pink-500" />
+
+      {globalCursorStyles}
     </>
   )
 } 

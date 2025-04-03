@@ -21,8 +21,8 @@ const contactMethods = [
   {
     icon: "📧",
     title: "Email",
-    value: "kaiyuan@example.com",
-    link: "mailto:kaiyuan@example.com"
+    value: "kaiyuanli07@gmail.com",
+    link: "mailto:kaiyuanli07@gmail.com"
   },
   {
     icon: "🔗",
@@ -33,8 +33,8 @@ const contactMethods = [
   {
     icon: "💻",
     title: "GitHub",
-    value: "github.com/kaiyuanli",
-    link: "https://github.com/kaiyuanli"
+    value: "github.com/kaiyuanli7",
+    link: "https://github.com/kaiyuanli7"
   }
 ]
 
@@ -158,7 +158,7 @@ export default function Contact() {
             transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
             className="text-xl text-white/80 max-w-2xl mx-auto mb-12"
           >
-            Have a project in mind or want to discuss potential opportunities? I'd love to hear from you.
+            I'd love to hear from you.
           </motion.p>
           <motion.div
             initial={{ scaleX: 0 }}

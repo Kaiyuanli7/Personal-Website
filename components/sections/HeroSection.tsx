@@ -189,14 +189,13 @@ export default function HeroSection() {
                 className="text-4xl md:text-5xl font-bold text-white mb-6"
                 style={{ y: useTransform(scrollYProgress, [0, 1], [0, -50]) }}
               >
-                Bridging Technology and Business
+                Bridging Innovation and Leadership
               </motion.h2>
               <motion.p 
                 className="text-xl text-white/80 max-w-2xl mx-auto"
                 style={{ y: useTransform(scrollYProgress, [0, 1], [0, -30]) }}
               >
-                Creating innovative solutions at the intersection of artificial intelligence, 
-                finance, and cutting-edge web technologies.
+                "The best way to predict the future is to invent it." - Alan Kay
               </motion.p>
             </motion.div>
           </div>

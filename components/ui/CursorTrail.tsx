@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
-import { useCursor } from '@/context/CursorContext'
+import { useCursor, TRAIL_COLORS } from '@/context/CursorContext'
 
 interface Point {
   x: number
@@ -11,7 +11,7 @@ interface Point {
 
 export default function CursorTrail() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const { isHovering } = useCursor()
+  const { isHovering, trailColor, trailEnabled } = useCursor()
   const trailRef = useRef<Point[]>([])
   const mousePosRef = useRef({ x: 0, y: 0 })
   const animationFrameRef = useRef<number>()
@@ -22,13 +22,22 @@ export default function CursorTrail() {
   const HELD_TTL = 800 // Longer duration when mouse is held
   const BASE_RADIUS = 2 // Increased from 1.5 to 2
   const MAX_SPEED = 60
-  const BASE_COLOR = [255, 61, 61]
-  const TARGET_COLOR = [243, 160, 160]
+  
+  // Get color from context
+  const getColors = () => {
+    const colors = TRAIL_COLORS[trailColor] || TRAIL_COLORS.red;
+    return {
+      baseColor: colors[0],
+      targetColor: colors[1]
+    };
+  };
 
-  const colorFn = (mix: number) =>
-    `rgb(${BASE_COLOR.map((color, i) => {
-      return color + mix * (TARGET_COLOR[i] - color)
-    })})`
+  const colorFn = (mix: number) => {
+    const { baseColor, targetColor } = getColors();
+    return `rgb(${baseColor.map((color, i) => {
+      return color + mix * (targetColor[i] - color)
+    })})`;
+  };
 
   const bezierTrail = (ctx: CanvasRenderingContext2D, width: number, height: number) => {
     let points: (Point | null)[] = [null, null, null, null]
@@ -131,6 +140,9 @@ export default function CursorTrail() {
   }
 
   useEffect(() => {
+    // Don't initialize if trail is disabled
+    if (!trailEnabled) return;
+    
     const canvas = canvasRef.current
     if (!canvas) return
 
@@ -209,7 +221,10 @@ export default function CursorTrail() {
         clearTimeout(resizeTimeoutRef.current)
       }
     }
-  }, [])
+  }, [trailColor, trailEnabled]) // Re-initialize when trail color or enabled state changes
+
+  // Early return after all hooks are defined
+  if (!trailEnabled) return null;
 
   return (
     <canvas

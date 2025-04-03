@@ -1,15 +1,33 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import localFont from 'next/font/local';
+import dynamic from 'next/dynamic';
 import "./globals.css";
 import "../styles/cursor.css";
 import Navigation from "@/components/layout/Navigation";
 import Footer from "@/components/layout/Footer";
 import { ScrollProvider } from "@/context/ScrollContext";
 import { CursorProvider } from "@/context/CursorContext";
-import Cursor from "@/components/ui/Cursor";
-import CursorTrail from "@/components/ui/CursorTrail";
-import SocialOverlay from "@/components/ui/SocialOverlay";
+import { ContactProvider } from "@/context/ContactContext";
+
+// Dynamically import non-critical UI components
+const Cursor = dynamic(() => import('@/components/ui/Cursor'), {
+  ssr: false,
+});
+
+const CursorTrail = dynamic(() => import('@/components/ui/CursorTrail'), {
+  ssr: false,
+});
+
+const SocialOverlay = dynamic(() => import('@/components/ui/SocialOverlay'), {
+  ssr: false,
+});
+
+// Dynamically import contact overlay with loading state
+const ContactOverlay = dynamic(() => import('@/components/ui/ContactOverlay'), {
+  ssr: false,
+  loading: () => <div className="hidden">Loading contact form...</div>,
+});
 
 const inter = Inter({ subsets: ["latin"] });
 const luxurious = localFont({
@@ -32,12 +50,15 @@ export default function RootLayout({
       <body className={`${inter.className} ${luxurious.variable}`}>
         <ScrollProvider>
           <CursorProvider>
+            <ContactProvider>
             <Cursor />
             <CursorTrail />
             <Navigation />
             <main>{children}</main>
             <Footer />
             <SocialOverlay />
+            <ContactOverlay />
+            </ContactProvider>
           </CursorProvider>
         </ScrollProvider>
       </body>

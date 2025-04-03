@@ -51,3 +51,8 @@ body {
   min-height: 100vh;
   font-family: var(--font-sans);
 }
+
+/* Hide footer on landing page */
+body.hide-footer footer {
+  display: none;
+}
