@@ -5,16 +5,24 @@ import { usePathname } from 'next/navigation'
 import { useState, useEffect, useRef } from 'react'
 import AnimatedText from '../ui/AnimatedText'
 import { useContact } from '@/context/ContactContext'
+import { Menu, X } from 'lucide-react'
 
 export default function Navigation() {
   const pathname = usePathname()
   const [isOnDarkBackground, setIsOnDarkBackground] = useState(true)
   const [isVisible, setIsVisible] = useState(false)
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
   const navRef = useRef<HTMLDivElement>(null)
   const [hoveredLink, setHoveredLink] = useState<string | null>(null)
   const { openContact } = useContact()
   
   useEffect(() => {
+    // Check if device is mobile
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768)
+    }
+    
     // Show navigation immediately on non-home pages
     if (pathname !== '/') {
       setIsVisible(true)
@@ -39,12 +47,23 @@ export default function Navigation() {
       }
     }
     
-    // Initial check
+    // Initial checks
+    checkMobile()
     handleScroll()
     
+    // Add event listeners
     window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
+    window.addEventListener('resize', checkMobile)
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+      window.removeEventListener('resize', checkMobile)
+    }
   }, [pathname])
+  
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen)
+  }
   
   return (
     <nav 
@@ -71,8 +90,23 @@ export default function Navigation() {
             </Link>
           </div>
           
-          {/* Right side */}
-          <div className="flex-1 flex items-center justify-end gap-8">
+          {/* Mobile menu button */}
+          <div className="md:hidden flex items-center">
+            <button 
+              onClick={toggleMobileMenu}
+              className={`p-2 rounded-md ${isOnDarkBackground ? 'text-white' : 'text-black'} hover:bg-gray-100/10`}
+              aria-label="Toggle mobile menu"
+            >
+              {isMobileMenuOpen ? (
+                <X className="h-6 w-6" />
+              ) : (
+                <Menu className="h-6 w-6" />
+              )}
+            </button>
+          </div>
+          
+          {/* Desktop navigation */}
+          <div className="hidden md:flex flex-1 items-center justify-end gap-8">
             <Link 
               href="/about"
               className={`text-lg transition-colors duration-300`}
@@ -111,6 +145,45 @@ export default function Navigation() {
             </button>
           </div>
         </div>
+        
+        {/* Mobile menu dropdown */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden transition-all duration-300 ease-in-out">
+            <div className={`px-2 pt-2 pb-4 space-y-4 backdrop-blur-lg rounded-lg mb-2 ${
+              isOnDarkBackground ? 'bg-black/70' : 'bg-white/70'
+            }`}>
+              <Link 
+                href="/about"
+                className={`block px-3 py-2 rounded-md text-xl text-center ${
+                  isOnDarkBackground ? 'text-white hover:bg-gray-700/50' : 'text-black hover:bg-gray-200/50'
+                }`}
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                About
+              </Link>
+              <Link 
+                href="/projects"
+                className={`block px-3 py-2 rounded-md text-xl text-center ${
+                  isOnDarkBackground ? 'text-white hover:bg-gray-700/50' : 'text-black hover:bg-gray-200/50'
+                }`}
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Projects
+              </Link>
+              <button 
+                onClick={() => {
+                  openContact();
+                  setIsMobileMenuOpen(false);
+                }}
+                className={`w-full px-3 py-2 rounded-md text-xl text-center ${
+                  isOnDarkBackground ? 'text-white hover:bg-gray-700/50' : 'text-black hover:bg-gray-200/50'
+                }`}
+              >
+                Contact
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </nav>
   )

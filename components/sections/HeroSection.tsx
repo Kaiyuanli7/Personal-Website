@@ -129,37 +129,37 @@ export default function HeroSection() {
         >
           {/* Floating shapes */}
           <div className="absolute inset-0 z-0">
-            {/* Tech icons floating with parallax */}
+            {/* Tech icons floating with parallax - responsive positioning and sizing */}
             <motion.div 
-              className="absolute top-1/4 left-[10%] md:left-1/4 w-16 h-16 md:w-20 md:h-20 bg-blue-600/20 rounded-xl flex items-center justify-center backdrop-blur-lg"
+              className="absolute top-[15%] md:top-1/4 left-[8%] md:left-1/4 w-14 h-14 md:w-20 md:h-20 bg-blue-600/20 rounded-xl flex items-center justify-center backdrop-blur-lg transform-gpu"
               style={{ y: y1, rotate: rotate1, scale: scale1, opacity: opacity1 }}
             >
-              <span className="text-white text-xl md:text-3xl">AI</span>
+              <span className="text-white text-base md:text-3xl font-medium">AI</span>
             </motion.div>
             
             <motion.div 
-              className="absolute top-1/3 right-[10%] md:right-1/4 w-16 h-16 md:w-24 md:h-24 bg-purple-600/20 rounded-full flex items-center justify-center backdrop-blur-lg"
+              className="absolute top-[25%] md:top-1/3 right-[8%] md:right-1/4 w-14 h-14 md:w-24 md:h-24 bg-purple-600/20 rounded-full flex items-center justify-center backdrop-blur-lg transform-gpu"
               style={{ y: y2, rotate: rotate2, scale: scale2, opacity: opacity2 }}
             >
-              <span className="text-white text-xl md:text-3xl">ML</span>
+              <span className="text-white text-base md:text-3xl font-medium">ML</span>
             </motion.div>
             
             <motion.div 
-              className="absolute bottom-1/3 md:bottom-1/4 left-[15%] md:left-1/3 w-20 h-20 md:w-28 md:h-28 bg-green-600/20 rounded-2xl flex items-center justify-center backdrop-blur-lg"
+              className="absolute bottom-[35%] md:bottom-1/4 left-[12%] md:left-1/3 w-16 h-16 md:w-28 md:h-28 bg-green-600/20 rounded-2xl flex items-center justify-center backdrop-blur-lg transform-gpu"
               style={{ y: y3, rotate: rotate1, scale: scale1, opacity: opacity1 }}
             >
-              <span className="text-white text-xl md:text-3xl">Web3</span>
+              <span className="text-white text-base md:text-3xl font-medium">Web3</span>
             </motion.div>
             
             <motion.div 
-              className="absolute bottom-1/4 right-[15%] md:right-1/4 w-24 h-24 md:w-32 md:h-32 bg-yellow-600/20 rounded-3xl flex items-center justify-center backdrop-blur-lg"
+              className="absolute bottom-[20%] md:bottom-1/4 right-[12%] md:right-1/4 w-18 h-18 md:w-32 md:h-32 bg-yellow-600/20 rounded-3xl flex items-center justify-center backdrop-blur-lg transform-gpu"
               style={{ y: y1, rotate: rotate2, scale: scale2, opacity: opacity2 }}
             >
-              <span className="text-white text-xl md:text-3xl">Finance</span>
+              <span className="text-white text-base md:text-3xl font-medium">Finance</span>
             </motion.div>
           </div>
           
-          {/* Animated lines connecting elements - adjusted for mobile */}
+          {/* Animated lines connecting elements - only shown on larger screens */}
           <svg className="absolute inset-0 w-full h-full z-0 opacity-30 hidden md:block">
             <motion.path 
               d="M200,100 C300,50 400,150 500,200" 
@@ -177,7 +177,7 @@ export default function HeroSection() {
             />
           </svg>
           
-          {/* Text overlay - adjusted for mobile */}
+          {/* Text overlay - improved mobile responsiveness */}
           <div className="absolute inset-0 flex items-center justify-center z-10 px-4">
             <motion.div 
               className="text-center"

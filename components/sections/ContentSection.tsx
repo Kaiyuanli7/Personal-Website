@@ -217,24 +217,6 @@ export default function ContentSection() {
                     My dream is to innovate through entrepreneurship and contribute meaningful solutions to society.
                   </motion.p>
 
-                  <motion.div 
-                    className="flex gap-4 mt-4 flex-wrap"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.8, duration: 0.8 }}
-                  >
-                    {['Honest', 'Enterprising', 'Reliable', 'Innovative'].map((tag, index) => (
-                      <motion.div 
-                        key={tag}
-                        className="bg-white/10 rounded-full px-6 py-2 text-white font-medium"
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.8 + (index * 0.1), duration: 0.5 }}
-                      >
-                        {tag}
-                      </motion.div>
-                    ))}
-                  </motion.div>
                 </motion.div>
 
                 <motion.div 
