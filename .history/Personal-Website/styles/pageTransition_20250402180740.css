@@ -1,0 +1,62 @@
+/* CSS for ultra-smooth page transitions */
+.page-transition-enter {
+  position: relative;
+  transform: translateY(8px);
+  opacity: 0;
+}
+
+.page-transition-enter-active {
+  transform: translateY(0);
+  opacity: 1;
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.page-transition-exit {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.page-transition-exit-active {
+  transform: translateY(-8px);
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Optimize performance */
+.page-transition-wrapper {
+  position: relative;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
+}
+
+/* Add subtle blur during transitions */
+@keyframes blur-in {
+  0% {
+    filter: blur(8px);
+  }
+  100% {
+    filter: blur(0);
+  }
+}
+
+@keyframes blur-out {
+  0% {
+    filter: blur(0);
+  }
+  100% {
+    filter: blur(8px);
+  }
+}
+
+.blur-enter {
+  animation: blur-in 0.3s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.blur-exit {
+  animation: blur-out 0.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+} 

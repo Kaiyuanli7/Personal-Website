@@ -1,0 +1,73 @@
+.transition-container {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+.old-page,
+.new-page {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  min-height: 100vh;
+  /* Better performance with GPU acceleration */
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000;
+  -webkit-backface-visibility: hidden;
+  -webkit-perspective: 1000;
+}
+
+.old-page {
+  z-index: 2;
+  pointer-events: none;
+}
+
+.new-page {
+  z-index: 1;
+  will-change: clip-path;
+}
+
+/* Prevent scrolling during transitions */
+html.transitioning,
+body.transitioning {
+  overflow: hidden;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* Fix for potential stacking issues */
+html, body {
+  overflow-x: hidden;
+}
+
+/* Ensures transitions work with fixed elements */
+.fixed-during-transition {
+  z-index: 9999;
+  position: relative;
+}
+
+/* Ensure smooth animation */
+* {
+  /* Smoother text during animations */
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Ensure content is visible during transitions */
+html, body, #__next {
+  height: 100%;
+  overflow-x: hidden;
+}
+
+/* Add smooth transition for child elements */
+.new-page *,
+.old-page * {
+  backface-visibility: hidden;
+  -webkit-font-smoothing: subpixel-antialiased;
+} 

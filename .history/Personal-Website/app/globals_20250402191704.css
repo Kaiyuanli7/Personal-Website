@@ -1,0 +1,126 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Hide default cursor globally */
+html, body, * {
+  cursor: none !important;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Ensure interactive elements don't show default cursor */
+a, button, input, textarea, select, [role="button"] {
+  cursor: none !important;
+}
+
+/* Override any other cursor styles */
+* {
+  cursor: none !important;
+}
+
+/* Force cursor: none on the root */
+:root {
+  cursor: none !important;
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 0, 0, 0;
+  --background-end-rgb: 0, 0, 0;
+  
+  /* Variables for glowing effect */
+  --glow-hsl: 217 100% 56.5%;
+  --glow-opacity: 0;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground: #ededed;
+    --background: #0a0a0a;
+  }
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
+  min-height: 100vh;
+  font-family: var(--font-sans);
+  font-feature-settings: "rlig" 1, "calt" 1;
+}
+
+/* Hide footer on landing page */
+body.hide-footer footer {
+  display: none;
+}
+
+body.no-scroll {
+  overflow: hidden;
+}
+
+.container-custom {
+  width: 100%;
+  margin-right: auto;
+  margin-left: auto;
+  padding-right: 1rem;
+  padding-left: 1rem;
+}
+
+@media (min-width: 640px) {
+  .container-custom {
+    max-width: 640px;
+    padding-right: 1.5rem;
+    padding-left: 1.5rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .container-custom {
+    max-width: 768px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container-custom {
+    max-width: 1024px;
+    padding-right: 2rem;
+    padding-left: 2rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .container-custom {
+    max-width: 1280px;
+    padding-right: 3rem;
+    padding-left: 3rem;
+  }
+}
+
+@media (min-width: 1536px) {
+  .container-custom {
+    max-width: 1536px;
+    padding-right: 4rem;
+    padding-left: 4rem;
+  }
+}
+
+/* For 3D perspective */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+/* For 3D transform */
+.transform-gpu {
+  transform-style: preserve-3d;
+}

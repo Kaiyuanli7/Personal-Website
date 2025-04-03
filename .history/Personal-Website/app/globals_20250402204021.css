@@ -1,0 +1,58 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Hide default cursor globally */
+html, body, * {
+  cursor: none !important;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Ensure interactive elements don't show default cursor */
+a, button, input, textarea, select, [role="button"] {
+  cursor: none !important;
+}
+
+/* Override any other cursor styles */
+* {
+  cursor: none !important;
+}
+
+/* Force cursor: none on the root */
+:root {
+  cursor: none !important;
+}
+
+:root {
+  --foreground: #171717;
+  --background: #ffffff;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground: #ededed;
+    --background: #0a0a0a;
+  }
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  min-height: 100vh;
+  font-family: var(--font-sans);
+}
+
+/* Hide footer on landing page */
+body.hide-footer footer {
+  display: none;
+}

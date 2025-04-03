@@ -1,0 +1,27 @@
+.page-transition-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.page-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  will-change: clip-path;
+}
+
+/* Ensure content is visible during transitions */
+html, body, #__next {
+  height: 100%;
+  overflow-x: hidden;
+}
+
+/* Add smooth transition for child elements */
+.page-content * {
+  backface-visibility: hidden;
+  -webkit-font-smoothing: subpixel-antialiased;
+} 

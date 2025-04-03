@@ -1,0 +1,60 @@
+.page-wrapper {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  /* Better performance with GPU acceleration */
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000;
+  -webkit-backface-visibility: hidden;
+  -webkit-perspective: 1000;
+  will-change: clip-path;
+}
+
+/* Prevent scrolling during transitions */
+html.transitioning,
+body.transitioning {
+  overflow: hidden;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* Fix for potential stacking issues */
+html, body {
+  overflow-x: hidden;
+}
+
+/* Ensures transitions work with fixed elements */
+.fixed-during-transition {
+  z-index: 9999;
+  position: relative;
+}
+
+/* Ensure smooth animation */
+* {
+  /* Smoother text during animations */
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Handle content within transitions */
+.page-content-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* Ensure content is visible during transitions */
+html, body, #__next {
+  height: 100%;
+  overflow-x: hidden;
+}
+
+/* Add smooth transition for child elements */
+.page-content * {
+  backface-visibility: hidden;
+  -webkit-font-smoothing: subpixel-antialiased;
+} 
