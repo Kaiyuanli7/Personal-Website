@@ -36,7 +36,7 @@ const titillium = Titillium_Web({
 });
 
 const luxurious = localFont({
-  src: '../lib/luxuriousScript-Regular.ttf',
+  src: '../lib/LuxuriousScript-Regular.ttf',
   variable: '--font-luxurious',
 });
 
