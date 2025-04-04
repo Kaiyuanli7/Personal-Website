@@ -9,6 +9,7 @@ import Footer from "@/components/layout/Footer";
 import { ScrollProvider } from "@/context/ScrollContext";
 import { CursorProvider } from "@/context/CursorContext";
 import { ContactProvider } from "@/context/ContactContext";
+import ScrollToTop from "./ScrollToTop";
 
 // Dynamically import non-critical UI components
 const Cursor = dynamic(() => import('@/components/ui/Cursor'), {
@@ -63,6 +64,7 @@ export default function RootLayout({
             <Footer />
             <SocialOverlay />
             <ContactOverlay />
+            <ScrollToTop />
             </ContactProvider>
           </CursorProvider>
         </ScrollProvider>

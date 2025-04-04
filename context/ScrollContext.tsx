@@ -10,8 +10,11 @@ interface ScrollContextType {
 const ScrollContext = createContext<ScrollContextType | undefined>(undefined)
 
 export function ScrollProvider({ children }: { children: ReactNode }) {
+  const [lenis, setLenis] = useState<Lenis | null>(null)
+
   useEffect(() => {
-    const lenis = new Lenis({
+    // Create a new lenis instance
+    const lenisInstance = new Lenis({
       duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       orientation: 'vertical',
@@ -21,20 +24,23 @@ export function ScrollProvider({ children }: { children: ReactNode }) {
       touchMultiplier: 2,
     })
 
+    // Store the instance in state so it can be accessed by consumers
+    setLenis(lenisInstance)
+
     function raf(time: number) {
-      lenis.raf(time)
+      lenisInstance.raf(time)
       requestAnimationFrame(raf)
     }
 
     requestAnimationFrame(raf)
 
     return () => {
-      lenis.destroy()
+      lenisInstance.destroy()
     }
   }, [])
 
   return (
-    <ScrollContext.Provider value={{ lenis: null }}>
+    <ScrollContext.Provider value={{ lenis }}>
       {children}
     </ScrollContext.Provider>
   )

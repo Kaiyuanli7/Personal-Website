@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 import { GlowingEffect } from "@/components/ui/glowing-effect"
 import { Box, User, Briefcase, Code } from "lucide-react"
@@ -36,6 +36,15 @@ export default function AboutNavigation({
   const [isScrolling, setIsScrolling] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const pathname = usePathname();
+  
+  // Track if we're in a programmatic jump between sections
+  const [isProgrammaticJump, setIsProgrammaticJump] = useState(false);
+  const lastJumpTime = useRef(0);
+
+  // For debugging
+  useEffect(() => {
+    console.log("Current active section:", activeSection);
+  }, [activeSection]);
 
   // Check if we're on the about page and make navigation visible immediately
   useEffect(() => {
@@ -51,30 +60,39 @@ export default function AboutNavigation({
     event.preventDefault();
     event.stopPropagation();
     
+    console.log(`Navigation clicked for section: ${sectionId}`);
+    
     if (isScrolling) return;
     
     // Set active section first
     setActiveSection(sectionId);
     setIsScrolling(true);
+    setIsProgrammaticJump(true);
+    lastJumpTime.current = Date.now();
     
     // Small delay before scrolling to allow the navigation UI to update first
     setTimeout(() => {
       // Use requestAnimationFrame to avoid layout thrashing
       requestAnimationFrame(() => {
         const targetElement = document.getElementById(sectionId);
+        console.log(`Target element found:`, !!targetElement);
         
         if (targetElement) {
           // Calculate offset based on section
-          let offset = -80; // Default negative offset to scroll a bit further
+          let offset = 0; // Default offset
           
           // Specific offsets for each section
-          if (sectionId === 'about-me-section') {
+          if (sectionId === 'intro-section') {
+            offset = 0;
+          } else if (sectionId === 'about-me-section') {
             offset = 0;
           } else if (sectionId === 'what-i-do-section') {
             offset = 0;
           } else if (sectionId === 'capabilities-section') {
-            offset = 130;
+            offset = 0;
           }
+          
+          console.log(`Scrolling to section with offset: ${offset}`);
           
           // Use lenis for smoother scrolling if available
           if (lenis) {
@@ -95,17 +113,103 @@ export default function AboutNavigation({
           // Add a cooldown period to prevent rapid consecutive snaps
           setTimeout(() => {
             setIsScrolling(false);
+            // Keep isProgrammaticJump true for a bit longer to allow animations to settle
+            setTimeout(() => {
+              setIsProgrammaticJump(false);
+            }, 400);
+            console.log("Navigation scrolling completed");
           }, 1000);
         } else {
           // If target not found, release the scrolling lock
           setIsScrolling(false);
+          setIsProgrammaticJump(false);
+          console.log("Target element not found!");
         }
       });
     }, 50);
   }, [isScrolling, lenis, setActiveSection]);
 
+  // Add manual scroll detection
+  useEffect(() => {
+    let lastScrollY = window.scrollY;
+    let scrollTimeout: NodeJS.Timeout | null = null;
+    
+    const handleScroll = () => {
+      // Don't process during programmatic scrolling
+      if (isScrolling || isProgrammaticJump) return;
+      
+      // Don't process if we recently did a programmatic jump
+      if (Date.now() - lastJumpTime.current < 1500) return;
+      
+      // Use RAF for smoother performance
+      requestAnimationFrame(() => {
+        const viewportHeight = window.innerHeight;
+        const viewportCenter = viewportHeight / 2;
+        
+        // Get all sections
+        const sections = [
+          document.getElementById('intro-section'),
+          document.getElementById('about-me-section'), 
+          document.getElementById('what-i-do-section'),
+          document.getElementById('capabilities-section')
+        ].filter(Boolean) as HTMLElement[];
+        
+        // Find the section that's most visible in the viewport
+        let bestVisibleSection = null;
+        let bestVisibility = 0;
+        
+        for (const section of sections) {
+          const rect = section.getBoundingClientRect();
+          
+          // Calculate how much of the section is visible in the viewport
+          const visibleTop = Math.max(0, rect.top);
+          const visibleBottom = Math.min(viewportHeight, rect.bottom);
+          
+          if (visibleBottom > visibleTop) {
+            const visibleHeight = visibleBottom - visibleTop;
+            const percentVisible = visibleHeight / rect.height;
+            
+            // Give preference to sections near the top of the viewport
+            const weightedVisibility = percentVisible * (1 - (visibleTop / viewportHeight) * 0.5);
+            
+            if (weightedVisibility > bestVisibility) {
+              bestVisibility = weightedVisibility;
+              bestVisibleSection = section;
+            }
+          }
+        }
+        
+        if (bestVisibleSection && bestVisibleSection.id !== activeSection) {
+          console.log(`Manual scroll detected, changing to section: ${bestVisibleSection.id}`);
+          setActiveSection(bestVisibleSection.id);
+        }
+      });
+    };
+    
+    // Add debounced scroll listener using a more responsive approach
+    let ticking = false;
+    const scrollListener = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          handleScroll();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+    
+    window.addEventListener('scroll', scrollListener, { passive: true });
+    
+    return () => {
+      window.removeEventListener('scroll', scrollListener);
+      if (scrollTimeout) {
+        clearTimeout(scrollTimeout);
+      }
+    };
+  }, [activeSection, isScrolling, isProgrammaticJump, setActiveSection]);
+
   return (
-    <div className={`fixed top-20 md:top-32 left-1/2 -translate-x-1/2 z-30 w-auto mx-auto transition-all duration-500 ${
+    <div className={`fixed top-16 md:top-4 left-1/2 -translate-x-1/2 z-50 w-auto mx-auto transition-all duration-500 ${
       isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-full'
     }`}>
       <motion.div 
@@ -147,20 +251,26 @@ export default function AboutNavigation({
                   <motion.div 
                     className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-full mx-3"
                     initial={{ scaleX: 0 }}
-                    animate={{ scaleX: 1 }}
+                    animate={{ scaleX: isProgrammaticJump ? 0 : 1 }}
                     style={{ 
                       transformOrigin: 'left',
-                      scaleX: activeSection === 'intro-section' 
-                        ? introBannerProgress 
-                        : activeSection === 'about-me-section' 
-                          ? aboutMeProgress 
-                          : activeSection === 'what-i-do-section' 
-                            ? whatIDoProgress 
-                            : activeSection === 'capabilities-section' 
-                              ? capabilitiesProgress 
-                              : 0
+                      scaleX: isProgrammaticJump ? 0 : (
+                        activeSection === 'intro-section' 
+                          ? introBannerProgress 
+                          : activeSection === 'about-me-section' 
+                            ? aboutMeProgress 
+                            : activeSection === 'what-i-do-section' 
+                              ? whatIDoProgress 
+                              : activeSection === 'capabilities-section' 
+                                ? capabilitiesProgress 
+                                : 0
+                      )
                     }}
-                    transition={{ type: "tween", ease: "linear", duration: 0.1 }}
+                    transition={{ 
+                      type: "tween", 
+                      ease: "linear", 
+                      duration: isProgrammaticJump ? 0 : 0.1 
+                    }}
                   />
                 </>
               )}
