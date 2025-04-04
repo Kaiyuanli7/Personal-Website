@@ -175,7 +175,7 @@ export default function ContentSection() {
                 transition={{ duration: 0.8 }}
               >
                 <motion.div 
-                  className="flex flex-col"
+                  className="flex flex-col px-4 md:px-0" 
                   style={{
                     y: useTransform(introBannerProgress, [0, 0.5], [0, -50])
                   }}

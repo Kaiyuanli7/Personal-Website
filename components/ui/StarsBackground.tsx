@@ -1,22 +1,62 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
-import { motion, useScroll, useTransform } from 'framer-motion'
+import { useEffect, useRef, useState } from 'react'
+import { motion } from 'framer-motion'
 
 export default function StarsBackground() {
   const starsRef = useRef<HTMLDivElement>(null)
-  const { scrollYProgress } = useScroll()
-
+  const [dimensions, setDimensions] = useState({ width: 0, height: 0 })
+  
   useEffect(() => {
     if (!starsRef.current) return
+    
+    // Get initial dimensions
+    const updateDimensions = () => {
+      const { width, height } = document.body.getBoundingClientRect()
+      setDimensions({ width, height })
+    }
+    
+    // Initial update
+    updateDimensions()
+    
+    // Listen to resize events
+    window.addEventListener('resize', updateDimensions)
+    
+    return () => {
+      window.removeEventListener('resize', updateDimensions)
+    }
+  }, [])
+  
+  useEffect(() => {
+    if (!starsRef.current || dimensions.width === 0) return
+    
+    // Clear previous stars
+    while (starsRef.current.firstChild) {
+      starsRef.current.removeChild(starsRef.current.firstChild)
+    }
 
     const createStar = (size: number = 1, opacity: number = 0.5) => {
       const star = document.createElement('div')
       star.className = 'absolute bg-white rounded-full'
       star.style.width = `${size}px`
       star.style.height = `${size}px`
-      star.style.left = `${Math.random() * 100}%`
-      star.style.top = `${Math.random() * 100}%`
+      
+      // Calculate positions based on viewport width and window.innerHeight
+      // This ensures consistent density regardless of page length
+      const viewportWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
+      const viewHeight = window.innerHeight
+      
+      // Calculate position to ensure stars cover the visible area and a bit beyond
+      // Use Math.random() * viewportWidth for x-position to ensure consistent horizontal spacing
+      star.style.left = `${Math.random() * viewportWidth}px`
+      
+      // For y-position, calculate a position relative to the viewport height,
+      // repeating stars at regular intervals throughout the page
+      const totalRows = Math.ceil(dimensions.height / viewHeight)
+      const rowHeight = viewHeight / 40 // 40 stars per viewport height
+      const row = Math.floor(Math.random() * 40 * totalRows)
+      star.style.top = `${row * rowHeight}px`
+      
       star.style.opacity = `${Math.random() * opacity + 0.2}`
       
       // Add a subtle twinkle animation to some stars
@@ -32,10 +72,13 @@ export default function StarsBackground() {
       star.className = 'absolute rounded-full'
       star.style.width = `${Math.random() * 3 + 1}px`
       star.style.height = `${Math.random() * 60 + 20}px`
-      star.style.left = `${Math.random() * 100}%`
-      star.style.top = `${Math.random() * 100}%`
+      
+      // Position shooting stars throughout the page height
+      const viewportWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
+      star.style.left = `${Math.random() * viewportWidth}px`
+      star.style.top = `${Math.random() * dimensions.height}px`
+      
       star.style.transform = `rotate(${Math.random() * 60 - 30}deg)`
-      // Add glowing effect
       star.style.background = 'linear-gradient(90deg, transparent, #fff, transparent)'
       star.style.boxShadow = '0 0 10px #fff, 0 0 20px #fff, 0 0 30px #fff'
       
@@ -47,11 +90,27 @@ export default function StarsBackground() {
       return star
     }
 
-    // Create layers of stars with reduced counts for better performance
-    const distantStars = Array.from({ length: 80 }, () => createStar(0.8, 0.3))
-    const backgroundStars = Array.from({ length: 60 }, () => createStar(1.2, 0.6))
-    const foregroundStars = Array.from({ length: 40 }, () => createStar(2, 0.9))
-    const shootingStars = Array.from({ length: 15 }, createShootingStar)
+    // Calculate how many stars to generate based on viewport dimensions
+    // This ensures consistent density across different screen sizes
+    const viewportArea = window.innerWidth * window.innerHeight
+    const starsPerSquarePx = 180 / (1920 * 1080) // Base density (180 stars for a 1080p viewport)
+    
+    const totalStars = Math.floor(viewportArea * starsPerSquarePx)
+    
+    // Distribute stars by size/distance
+    const distantCount = Math.floor(totalStars * 0.4)
+    const backgroundCount = Math.floor(totalStars * 0.4)
+    const foregroundCount = Math.floor(totalStars * 0.2)
+    
+    // Calculate shooting stars based on page height
+    // More shooting stars for longer pages, but cap the maximum
+    const shootingStarCount = Math.min(15, Math.max(5, Math.floor(dimensions.height / window.innerHeight * 5)))
+
+    // Create stars with different sizes for depth perception
+    const distantStars = Array.from({ length: distantCount }, () => createStar(0.8, 0.3))
+    const backgroundStars = Array.from({ length: backgroundCount }, () => createStar(1.2, 0.6))
+    const foregroundStars = Array.from({ length: foregroundCount }, () => createStar(2, 0.9))
+    const shootingStars = Array.from({ length: shootingStarCount }, createShootingStar)
     
     // Append all stars in order from background to foreground
     distantStars.forEach(star => starsRef.current?.appendChild(star))
@@ -83,77 +142,18 @@ export default function StarsBackground() {
     document.head.appendChild(style)
 
     return () => {
-      distantStars.forEach(star => star.remove())
-      backgroundStars.forEach(star => star.remove())
-      foregroundStars.forEach(star => star.remove())
-      shootingStars.forEach(star => star.remove())
+      while (starsRef.current?.firstChild) {
+        starsRef.current.removeChild(starsRef.current.firstChild)
+      }
       style.remove()
     }
-  }, [])
-
-  // Create transform values using framer-motion's built-in transforms for better performance
-  const distantY = useTransform(scrollYProgress, [0, 1], [0, 50])
-  const distantX = useTransform(scrollYProgress, [0, 1], [0, 20])
-  const backgroundY = useTransform(scrollYProgress, [0, 1], [0, 100])
-  const backgroundX = useTransform(scrollYProgress, [0, 1], [0, 50])
-  const foregroundY = useTransform(scrollYProgress, [0, 1], [0, 200])
-  const foregroundX = useTransform(scrollYProgress, [0, 1], [0, 100])
-  
-  useEffect(() => {
-    if (!starsRef.current) return
-
-    // Select star layers
-    const distantStars = starsRef.current.querySelectorAll('div:nth-child(-n+80)')
-    const backgroundStars = starsRef.current.querySelectorAll('div:nth-child(n+81):nth-child(-n+140)')
-    const foregroundStars = starsRef.current.querySelectorAll('div:nth-child(n+141):nth-child(-n+180)')
-    
-    const updateStars = () => {
-      const distantYValue = distantY.get()
-      const distantXValue = distantX.get()
-      const backgroundYValue = backgroundY.get()
-      const backgroundXValue = backgroundX.get()
-      const foregroundYValue = foregroundY.get()
-      const foregroundXValue = foregroundX.get()
-      
-      // Distant stars (minimal movement)
-      distantStars.forEach((star, i) => {
-        const htmlStar = star as HTMLElement
-        const direction = i % 2 // Simplified: just two directions
-        const yOffset = distantYValue * (direction === 0 ? 1 : -1)
-        const xOffset = distantXValue * (i % 4 < 2 ? 1 : -1)
-        htmlStar.style.transform = `translate(${xOffset}px, ${yOffset}px)`
-      })
-
-      // Background stars (medium speed)
-      backgroundStars.forEach((star, i) => {
-        const htmlStar = star as HTMLElement
-        const direction = i % 2
-        const yOffset = backgroundYValue * (direction === 0 ? 1 : -1)
-        const xOffset = backgroundXValue * (i % 4 < 2 ? 1 : -1)
-        htmlStar.style.transform = `translate(${xOffset}px, ${yOffset}px)`
-      })
-
-      // Foreground stars (faster)
-      foregroundStars.forEach((star, i) => {
-        const htmlStar = star as HTMLElement
-        const direction = i % 2
-        const yOffset = foregroundYValue * (direction === 0 ? 1 : -1)
-        const xOffset = foregroundXValue * (i % 4 < 2 ? 1 : -1)
-        htmlStar.style.transform = `translate(${xOffset}px, ${yOffset}px)`
-      })
-    }
-
-    const unsubscribe = scrollYProgress.on('change', updateStars)
-    
-    return () => {
-      unsubscribe()
-    }
-  }, [scrollYProgress, distantX, distantY, backgroundX, backgroundY, foregroundX, foregroundY])
+  }, [dimensions])
 
   return (
     <motion.div
       ref={starsRef}
-      className="absolute inset-0 z-0 overflow-hidden"
+      className="fixed inset-0 z-0 overflow-hidden pointer-events-none"
+      style={{ height: Math.max(dimensions.height, window.innerHeight) }}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 1 }}

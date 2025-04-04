@@ -9,69 +9,89 @@ import SettingsDropdown from './SettingsDropdown'
 export default function SocialOverlay() {
   const pathname = usePathname()
   const [isVisible, setIsVisible] = useState(false)
-  const [isMobile, setIsMobile] = useState(false)
+  const [isMobile, setIsMobile] = useState(true) // Default to mobile to prevent flash on load
 
   useEffect(() => {
-    // Check if device is mobile
+    // Simplified and more reliable mobile detection
     const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 768)
+      const viewportWidth = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0)
+      // More conservative threshold - consider anything under 992px as mobile
+      setIsMobile(viewportWidth < 992)
+      
+      // For debugging
+      console.log('Device detection:', { 
+        viewportWidth, 
+        isMobileDevice: viewportWidth < 992 
+      })
     }
     
-    // Show immediately on non-home pages
-    if (pathname !== '/') {
+    // Initial check before deciding to show
+    checkMobile()
+    
+    // Show on non-home pages (but only after confirming desktop)
+    if (pathname !== '/' && !isMobile) {
       setIsVisible(true)
-      return
     }
 
     const handleScroll = () => {
-      const scrollPosition = window.scrollY
-      const viewportHeight = window.innerHeight
+      // Only calculate scroll if we're on desktop
+      if (!isMobile) {
+        const scrollPosition = window.scrollY
+        const viewportHeight = window.innerHeight
 
-      // On home page, show after 10% of viewport height is scrolled on mobile, 20% on desktop
-      if (pathname === '/') {
-        setIsVisible(scrollPosition > viewportHeight * (isMobile ? 0.1 : 0.2))
+        // On home page, show after 20% of viewport height is scrolled (desktop only)
+        if (pathname === '/') {
+          setIsVisible(scrollPosition > viewportHeight * 0.2)
+        }
       }
     }
 
-    // Initial checks
-    checkMobile()
-    handleScroll()
-    
     // Event listeners
     window.addEventListener('scroll', handleScroll)
     window.addEventListener('resize', checkMobile)
     
+    // Recheck after events that might change viewport
+    window.addEventListener('orientationchange', () => {
+      // Allow time for orientation change to complete
+      setTimeout(checkMobile, 100)
+    })
+    
     return () => {
       window.removeEventListener('scroll', handleScroll)
       window.removeEventListener('resize', checkMobile)
+      window.removeEventListener('orientationchange', checkMobile)
     }
-  }, [pathname, isMobile])
+  }, [pathname, isMobile]) // Add isMobile to dependency array
 
-  // Determine if social links should be visible
-  const shouldShowSocials = isVisible && !isMobile;
+  // DEBUG: Log rendering decisions
+  useEffect(() => {
+    console.log('SocialOverlay render state:', { isMobile, isVisible, pathname })
+  }, [isMobile, isVisible, pathname])
+
+  // Strictly do not render anything if on mobile
+  if (isMobile) {
+    console.log('Mobile device detected - SocialOverlay not rendering')
+    return null
+  }
 
   return (
     <motion.div 
-      className={`fixed z-50 transition-all duration-500 ${
+      className={`fixed z-50 transition-all duration-500 bottom-8 right-8 flex flex-col gap-4 ${
         isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-full'
-      } ${
-        isMobile 
-          ? 'bottom-4 right-4 flex flex-col gap-3' 
-          : 'bottom-8 right-8 flex flex-col gap-4'
       }`}
       initial={false}
     >
-      {/* Always show settings dropdown on both mobile and desktop */}
+      {/* Settings dropdown */}
       <SettingsDropdown />
       
-      {/* Social Links - only visible on desktop */}
-      {shouldShowSocials && (
-        <div className="flex flex-col gap-3 md:gap-4">
+      {/* Social Links */}
+      {isVisible && (
+        <div className="flex flex-col gap-4">
           <Link 
             href="https://steamcommunity.com/profiles/76561199062478777/" 
             target="_blank" 
             rel="noopener noreferrer"
-            className="w-10 h-10 md:w-12 md:h-12 bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/20 transition-all duration-300 hover:scale-110 active:scale-95"
+            className="w-12 h-12 bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/20 transition-all duration-300 hover:scale-110 active:scale-95"
             aria-label="Steam Profile"
           >
             <svg 
@@ -79,7 +99,7 @@ export default function SocialOverlay() {
               width="16" 
               height="16" 
               fill="currentColor" 
-              className="bi bi-steam text-white w-4 h-4 md:w-5 md:h-5" 
+              className="bi bi-steam text-white w-5 h-5" 
               viewBox="0 0 16 16"
             >
               <path d="M.329 10.333A8.01 8.01 0 0 0 7.99 16C12.414 16 16 12.418 16 8s-3.586-8-8.009-8A8.006 8.006 0 0 0 0 7.468l.003.006 4.304 1.769A2.2 2.2 0 0 1 5.62 8.88l1.96-2.844-.001-.04a3.046 3.046 0 0 1 3.042-3.043 3.046 3.046 0 0 1 3.042 3.043 3.047 3.047 0 0 1-3.111 3.044l-2.804 2a2.223 2.223 0 0 1-3.075 2.11 2.22 2.22 0 0 1-1.312-1.568L.33 10.333Z"/>
@@ -91,11 +111,11 @@ export default function SocialOverlay() {
             href="https://github.com/Kaiyuanli7" 
             target="_blank" 
             rel="noopener noreferrer"
-            className="w-10 h-10 md:w-12 md:h-12 bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/20 transition-all duration-300 hover:scale-110 active:scale-95"
+            className="w-12 h-12 bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/20 transition-all duration-300 hover:scale-110 active:scale-95"
             aria-label="GitHub Profile"
           >
             <svg 
-              className="w-4 h-4 md:w-5 md:h-5 text-white" 
+              className="w-5 h-5 text-white" 
               fill="currentColor" 
               viewBox="0 0 24 24" 
               aria-hidden="true"
@@ -112,11 +132,11 @@ export default function SocialOverlay() {
             href="https://www.instagram.com/kaiyuansz/" 
             target="_blank" 
             rel="noopener noreferrer"
-            className="w-10 h-10 md:w-12 md:h-12 bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/20 transition-all duration-300 hover:scale-110 active:scale-95"
+            className="w-12 h-12 bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/20 transition-all duration-300 hover:scale-110 active:scale-95"
             aria-label="Instagram Profile"
           >
             <svg 
-              className="w-4 h-4 md:w-5 md:h-5 text-white" 
+              className="w-5 h-5 text-white" 
               fill="currentColor" 
               viewBox="0 0 24 24" 
               aria-hidden="true"
@@ -132,4 +152,4 @@ export default function SocialOverlay() {
       )}
     </motion.div>
   )
-} 
+}

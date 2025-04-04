@@ -78,17 +78,19 @@ export default function Navigation() {
   const menuVariants = {
     closed: {
       opacity: 0,
+      height: 0,
       transition: {
-        duration: 0.4,
-        ease: "easeInOut",
+        height: { duration: 0.4, ease: [0.33, 1, 0.68, 1] },
+        opacity: { duration: 0.3 },
         when: "afterChildren"
       }
     },
     open: {
       opacity: 1,
+      height: "100vh",
       transition: {
-        duration: 0.4,
-        ease: "easeInOut",
+        height: { duration: 0.4, ease: [0.33, 1, 0.68, 1] },
+        opacity: { duration: 0.3 },
         when: "beforeChildren",
         staggerChildren: 0.1
       }
@@ -99,7 +101,7 @@ export default function Navigation() {
   const linkVariants = {
     closed: {
       opacity: 0,
-      y: 20,
+      y: -20,
       transition: {
         duration: 0.2
       }
@@ -202,55 +204,37 @@ export default function Navigation() {
         <AnimatePresence>
           {isMobileMenuOpen && (
             <motion.div 
-              className="fixed inset-0 md:hidden z-50 flex flex-col"
+              className="fixed inset-x-0 top-0 md:hidden z-50 flex flex-col origin-top overflow-hidden"
               initial="closed"
               animate="open"
               exit="closed"
               variants={menuVariants}
             >
-              {/* Solid Background */}
-              <motion.div 
-                className={`absolute inset-0 ${
-                  isOnDarkBackground 
-                    ? 'bg-gray-950' 
-                    : 'bg-gray-100'
-                }`}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.3 }}
-              />
+              {/* Solid Black Background */}
+              <div className="absolute inset-0 bg-black" />
               
               {/* Content Container */}
-              <div className="relative flex-1 flex flex-col items-center justify-center px-6 py-10">
+              <div className="relative flex-1 flex flex-col items-center justify-center px-6 py-10 overflow-auto">
                 <div className="w-full max-w-md space-y-10 py-10">
                   {/* Main Navigation Links */}
                   <motion.div className="space-y-8" variants={linkVariants}>
                     <Link 
                       href="/about"
-                      className={`group flex items-center justify-between w-full px-4 py-4 rounded-xl text-3xl font-medium ${
-                        isOnDarkBackground ? 'text-white' : 'text-gray-800'
-                      } hover:scale-105 transition-all duration-300`}
+                      className="group flex items-center justify-between w-full px-4 py-4 rounded-xl text-3xl font-medium text-white hover:scale-105 transition-all duration-300"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       <span>About</span>
-                      <span className={`transform group-hover:translate-x-1 transition-transform ${
-                        isOnDarkBackground ? 'text-white/50' : 'text-gray-500'
-                      }`}>→</span>
+                      <span className="transform group-hover:translate-x-1 transition-transform text-white/50">→</span>
                     </Link>
                     
                     <motion.div variants={linkVariants}>
                       <Link 
                         href="/projects"
-                        className={`group flex items-center justify-between w-full px-4 py-4 rounded-xl text-3xl font-medium ${
-                          isOnDarkBackground ? 'text-white' : 'text-gray-800'
-                        } hover:scale-105 transition-all duration-300`}
+                        className="group flex items-center justify-between w-full px-4 py-4 rounded-xl text-3xl font-medium text-white hover:scale-105 transition-all duration-300"
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
                         <span>Projects</span>
-                        <span className={`transform group-hover:translate-x-1 transition-transform ${
-                          isOnDarkBackground ? 'text-white/50' : 'text-gray-500'
-                        }`}>→</span>
+                        <span className="transform group-hover:translate-x-1 transition-transform text-white/50">→</span>
                       </Link>
                     </motion.div>
                     
@@ -260,37 +244,27 @@ export default function Navigation() {
                           openContact();
                           setIsMobileMenuOpen(false);
                         }}
-                        className={`group flex items-center justify-between w-full px-4 py-4 rounded-xl text-3xl font-medium ${
-                          isOnDarkBackground ? 'text-white' : 'text-gray-800'
-                        } hover:scale-105 transition-all duration-300`}
+                        className="group flex items-center justify-between w-full px-4 py-4 rounded-xl text-3xl font-medium text-white hover:scale-105 transition-all duration-300"
                       >
                         <span>Contact</span>
-                        <span className={`transform group-hover:translate-x-1 transition-transform ${
-                          isOnDarkBackground ? 'text-white/50' : 'text-gray-500'
-                        }`}>→</span>
+                        <span className="transform group-hover:translate-x-1 transition-transform text-white/50">→</span>
                       </button>
                     </motion.div>
                   </motion.div>
                   
                   {/* Social Links */}
                   <motion.div 
-                    className="pt-8 border-t border-gray-800/20 space-y-4"
+                    className="pt-8 border-t border-white/10 space-y-4"
                     variants={linkVariants}
                   >
-                    <h3 className={`text-sm uppercase font-bold mb-6 ${
-                      isOnDarkBackground ? 'text-white/50' : 'text-gray-500'
-                    }`}>Connect</h3>
+                    <h3 className="text-sm uppercase font-bold mb-6 text-white/50">Connect</h3>
                     
                     <div className="flex gap-6">
                       <a 
                         href="https://github.com/Kaiyuanli7" 
                         target="_blank" 
                         rel="noopener noreferrer"
-                        className={`p-4 rounded-full ${
-                          isOnDarkBackground 
-                            ? 'bg-white/10 text-white hover:bg-white/20' 
-                            : 'bg-black/10 text-gray-700 hover:bg-black/20'
-                        } transition-all duration-300 hover:scale-110`}
+                        className="p-4 rounded-full bg-white/10 text-white hover:bg-white/20 transition-all duration-300 hover:scale-110"
                         aria-label="GitHub Profile"
                       >
                         <Github size={24} />
@@ -300,11 +274,7 @@ export default function Navigation() {
                         href="https://www.instagram.com/kaiyuansz/" 
                         target="_blank" 
                         rel="noopener noreferrer"
-                        className={`p-4 rounded-full ${
-                          isOnDarkBackground 
-                            ? 'bg-white/10 text-white hover:bg-white/20' 
-                            : 'bg-black/10 text-gray-700 hover:bg-black/20'
-                        } transition-all duration-300 hover:scale-110`}
+                        className="p-4 rounded-full bg-white/10 text-white hover:bg-white/20 transition-all duration-300 hover:scale-110"
                         aria-label="Instagram Profile"
                       >
                         <Instagram size={24} />
@@ -314,15 +284,22 @@ export default function Navigation() {
                         href="https://steamcommunity.com/profiles/76561199062478777/" 
                         target="_blank" 
                         rel="noopener noreferrer"
-                        className={`p-4 rounded-full ${
-                          isOnDarkBackground 
-                            ? 'bg-white/10 text-white hover:bg-white/20' 
-                            : 'bg-black/10 text-gray-700 hover:bg-black/20'
-                        } transition-all duration-300 hover:scale-110`}
+                        className="p-4 rounded-full bg-white/10 text-white hover:bg-white/20 transition-all duration-300 hover:scale-110"
                         aria-label="Steam Profile"
                       >
-                        <ExternalLink size={24} />
+                        <svg 
+                          xmlns="http://www.w3.org/2000/svg" 
+                          width="24" 
+                          height="24" 
+                          fill="currentColor" 
+                          viewBox="0 0 16 16"
+                          className="bi bi-steam"
+                        >
+                          <path d="M.329 10.333A8.01 8.01 0 0 0 7.99 16C12.414 16 16 12.418 16 8s-3.586-8-8.009-8A8.006 8.006 0 0 0 0 7.468l.003.006 4.304 1.769A2.2 2.2 0 0 1 5.62 8.88l1.96-2.844-.001-.04a3.046 3.046 0 0 1 3.042-3.043 3.046 3.046 0 0 1 3.042 3.043 3.047 3.047 0 0 1-3.111 3.044l-2.804 2a2.223 2.223 0 0 1-3.075 2.11 2.22 2.22 0 0 1-1.312-1.568L.33 10.333Z"/>
+                          <path d="M4.868 12.683a1.715 1.715 0 0 0 1.318-3.165 1.7 1.7 0 0 0-1.263-.02l1.023.424a1.261 1.261 0 1 1-.97 2.33l-.99-.41a1.7 1.7 0 0 0 .882.84Zm3.726-6.687a2.03 2.03 0 0 0 2.027 2.029 2.03 2.03 0 0 0 2.027-2.029 2.03 2.03 0 0 0-2.027-2.027 2.03 2.03 0 0 0-2.027 2.027m2.03-1.527a1.524 1.524 0 1 1-.002 3.048 1.524 1.524 0 0 1 .002-3.048"/>
+                        </svg>
                       </a>
+                      
                     </div>
                   </motion.div>
                 </div>
