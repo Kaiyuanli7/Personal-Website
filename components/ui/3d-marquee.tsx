@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { GlowingEffect } from "./glowing-effect";
 
 // Project placeholder data
 const projectTitles = [
@@ -94,47 +95,56 @@ export const ThreeDMarquee = ({
                           duration: 0.4,
                           ease: "easeOut",
                         }}
-                        className={`w-full h-full rounded-lg bg-gradient-to-br ${gradient} ring ring-white/10 p-3 flex flex-col shadow-lg overflow-hidden`}
+                        className="w-full h-full relative rounded-2xl border border-white/10 p-2 transition-all duration-300 hover:border-white/20"
                         style={{
                           aspectRatio: "16/9",
                           perspective: "1000px",
                           transformStyle: "preserve-3d"
                         }}
                       >
-                        {/* Website-like header */}
-                        <div className="flex justify-between items-center mb-2 border-b border-white/20 pb-1">
-                          <div className="text-white font-bold text-sm">{projectTitle}</div>
-                          <div className="flex space-x-1">
-                            <div className="w-1.5 h-1.5 rounded-full bg-red-400"></div>
-                            <div className="w-1.5 h-1.5 rounded-full bg-yellow-400"></div>
-                            <div className="w-1.5 h-1.5 rounded-full bg-green-400"></div>
-                          </div>
-                        </div>
-                        
-                        {/* Website-like content */}
-                        <div className="flex-grow">
-                          {/* Navigation bar */}
-                          <div className="flex space-x-3 mb-2">
-                            <div className="bg-white/10 h-2 w-10 rounded-sm"></div>
-                            <div className="bg-white/10 h-2 w-8 rounded-sm"></div>
-                            <div className="bg-white/10 h-2 w-12 rounded-sm"></div>
-                          </div>
-                          
-                          {/* Hero section */}
-                          <div className="bg-white/10 h-12 w-full rounded-sm mb-2"></div>
-                          
-                          {/* Content blocks */}
-                          <div className="grid grid-cols-2 gap-2 mb-2">
-                            <div className="bg-white/10 h-8 rounded-sm"></div>
-                            <div className="bg-white/10 h-8 rounded-sm"></div>
+                        <GlowingEffect
+                          spread={40}
+                          glow={true}
+                          disabled={false}
+                          proximity={64}
+                          inactiveZone={0.01}
+                        />
+                        <div className="relative flex h-full flex-col justify-between overflow-hidden rounded-xl border-white/10 p-3 bg-black/40 backdrop-blur-sm">
+                          {/* Website-like header */}
+                          <div className="flex justify-between items-center mb-2 border-b border-white/20 pb-1">
+                            <div className="text-white font-bold text-sm">{projectTitle}</div>
+                            <div className="flex space-x-1">
+                              <div className="w-1.5 h-1.5 rounded-full bg-red-400"></div>
+                              <div className="w-1.5 h-1.5 rounded-full bg-yellow-400"></div>
+                              <div className="w-1.5 h-1.5 rounded-full bg-green-400"></div>
+                            </div>
                           </div>
                           
-                          <div className="bg-white/10 h-6 w-3/4 rounded-sm"></div>
-                        </div>
-                        
-                        <div className="flex justify-between items-end mt-2">
-                          <div className="text-white/80 text-sm">Coming Soon</div>
-                          <div className="bg-white/20 rounded-full px-3 py-1 text-xs text-white">Project</div>
+                          {/* Website-like content */}
+                          <div className="flex-grow">
+                            {/* Navigation bar */}
+                            <div className="flex space-x-3 mb-2">
+                              <div className="bg-white/10 h-2 w-10 rounded-sm"></div>
+                              <div className="bg-white/10 h-2 w-8 rounded-sm"></div>
+                              <div className="bg-white/10 h-2 w-12 rounded-sm"></div>
+                            </div>
+                            
+                            {/* Hero section */}
+                            <div className="bg-white/10 h-12 w-full rounded-sm mb-2"></div>
+                            
+                            {/* Content blocks */}
+                            <div className="grid grid-cols-2 gap-2 mb-2">
+                              <div className="bg-white/10 h-8 rounded-sm"></div>
+                              <div className="bg-white/10 h-8 rounded-sm"></div>
+                            </div>
+                            
+                            <div className="bg-white/10 h-6 w-3/4 rounded-sm"></div>
+                          </div>
+                          
+                          <div className="flex justify-between items-end mt-2">
+                            <div className="text-white/80 text-sm">Coming Soon</div>
+                            <div className="bg-white/20 rounded-full px-3 py-1 text-xs text-white">Project</div>
+                          </div>
                         </div>
                       </motion.div>
                     </div>

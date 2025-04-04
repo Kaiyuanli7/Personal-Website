@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence, useMotionTemplate, useMotionValue, animate } from 'framer-motion'
 import { useClickAway } from '@/hooks/useClickAway'
 import { useContact } from '@/context/ContactContext'
+import { GlowingEffect } from '@/components/ui/glowing-effect'
 
 const COLORS = ["#13FFAA", "#1E67C6", "#CE84CF", "#DD335C"]
 
@@ -26,6 +27,18 @@ const contactMethods = [
     title: "GitHub",
     value: "github.com/kaiyuanli7",
     link: "https://github.com/kaiyuanli7"
+  },
+  {
+    icon: "🎮",
+    title: "Steam",
+    value: "steamcommunity.com/id/kaiyuanli",
+    link: "https://steamcommunity.com/id/kaiyuanli"
+  },
+  {
+    icon: "📸",
+    title: "Instagram",
+    value: "instagram.com/kaiyuanli",
+    link: "https://instagram.com/kaiyuanli"
   }
 ]
 
@@ -133,11 +146,11 @@ export default function ContactOverlay() {
               mass: 1,
               opacity: { duration: 0.4 }
             }}
-            className="fixed top-0 right-0 h-full w-full sm:w-[550px] md:w-[650px] lg:w-[750px] bg-gray-950 z-50 overflow-y-auto shadow-xl"
+            className="fixed top-0 right-0 h-full w-full sm:w-[550px] md:w-[650px] lg:w-[750px] bg-gray-950 z-50 overflow-y-auto overflow-x-hidden shadow-xl"
           >
             {/* Content container with smooth reveal animations */}
             <motion.div 
-              className="relative h-full p-8 md:p-10 lg:p-12"
+              className="relative h-auto min-h-full p-8 md:p-10 lg:p-12 pb-28 max-h-screen overflow-y-auto overflow-x-hidden"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.6, delay: 0.15 }}
@@ -158,12 +171,12 @@ export default function ContactOverlay() {
               </motion.button>
               
               {/* Header */}
-              <div className="pt-8 mb-12">
+              <div className="pt-6 mb-8">
                 <motion.h1
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, ease: "easeOut" }}
-                  className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 font-display"
+                  className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-3 font-display"
                 >
                   Get in Touch
                 </motion.h1>
@@ -179,12 +192,12 @@ export default function ContactOverlay() {
                   initial={{ scaleX: 0 }}
                   animate={{ scaleX: 1 }}
                   transition={{ duration: 1, delay: 0.5, ease: "easeInOut" }}
-                  className="w-32 h-1 bg-white mt-6"
+                  className="w-32 h-1 bg-white mt-4"
                   style={{ background: gradientBackground }}
                 />
               </div>
               
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Contact Form */}
                 <motion.div 
                   className="space-y-8 mb-12 lg:mb-0"
@@ -193,150 +206,201 @@ export default function ContactOverlay() {
                   transition={{ duration: 0.5, delay: 0.3 }}
                 >
                   <motion.div 
-                    className="backdrop-blur-lg bg-white/5 rounded-2xl p-6 md:p-8 border border-white/10"
+                    className="relative rounded-2xl border border-white/10 p-2 transition-all duration-300 hover:border-white/20"
                     whileHover={{ y: -5 }}
                     transition={{ duration: 0.4 }}
                   >
-                    <h2 className="text-2xl font-bold text-white mb-6 font-display">Send a Message</h2>
-                    
-                    <form onSubmit={handleSubmit} className="space-y-5">
-                      <motion.div 
-                        custom={1}
-                        initial="hidden"
-                        animate="visible"
-                        variants={formVariants}
-                      >
-                        <label htmlFor="name" className="block text-white/80 font-medium mb-2">Name</label>
-                        <input
-                          type="text"
-                          id="name"
-                          name="name"
-                          value={formState.name}
-                          onChange={handleInputChange}
-                          className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white placeholder:text-white/40 focus:outline-none focus:border-white/30 focus:ring-1 focus:ring-white/30 transition-colors"
-                          placeholder="Your Name"
-                          disabled={formStatus === 'submitting'}
-                          required
-                        />
-                      </motion.div>
+                    <GlowingEffect
+                      spread={40}
+                      glow={true}
+                      disabled={false}
+                      proximity={64}
+                      inactiveZone={0.01}
+                    />
+                    <div className="relative rounded-xl border-white/10 p-6 md:p-8 bg-black/40 backdrop-blur-sm">
+                      <h2 className="text-2xl font-bold text-white mb-6 font-display">Send a Message</h2>
                       
-                      <motion.div 
-                        custom={2}
-                        initial="hidden"
-                        animate="visible"
-                        variants={formVariants}
-                      >
-                        <label htmlFor="email" className="block text-white/80 font-medium mb-2">Email</label>
-                        <input
-                          type="email"
-                          id="email"
-                          name="email"
-                          value={formState.email}
-                          onChange={handleInputChange}
-                          className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white placeholder:text-white/40 focus:outline-none focus:border-white/30 focus:ring-1 focus:ring-white/30 transition-colors"
-                          placeholder="your.email@example.com"
-                          disabled={formStatus === 'submitting'}
-                          required
-                        />
-                      </motion.div>
-                      
-                      <motion.div 
-                        custom={3}
-                        initial="hidden"
-                        animate="visible"
-                        variants={formVariants}
-                      >
-                        <label htmlFor="message" className="block text-white/80 font-medium mb-2">Message</label>
-                        <textarea
-                          id="message"
-                          name="message"
-                          value={formState.message}
-                          onChange={handleInputChange}
-                          rows={5}
-                          className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white placeholder:text-white/40 focus:outline-none focus:border-white/30 focus:ring-1 focus:ring-white/30 transition-colors resize-none"
-                          placeholder="Tell me about your project or inquiry..."
-                          disabled={formStatus === 'submitting'}
-                          required
-                        />
-                      </motion.div>
-                      
-                      <motion.div 
-                        custom={4}
-                        initial="hidden"
-                        animate="visible"
-                        variants={formVariants}
-                      >
-                        <motion.button
-                          whileHover={{ scale: 1.02 }}
-                          whileTap={{ scale: 0.98 }}
-                          type="submit"
-                          disabled={formStatus === 'submitting' || formStatus === 'success'}
-                          className={`w-full py-3 rounded-lg backdrop-blur-sm text-white font-medium transition-all ${
-                            formStatus === 'success' 
-                              ? 'bg-green-500/20 border border-green-500/30' 
-                              : formStatus === 'submitting'
-                                ? 'bg-white/10 border border-white/20 opacity-70'
-                                : 'bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-white/10 hover:border-white/30'
-                          }`}
+                      <form onSubmit={handleSubmit} className="space-y-5">
+                        <motion.div 
+                          custom={1}
+                          initial="hidden"
+                          animate="visible"
+                          variants={formVariants}
                         >
-                          {formStatus === 'idle' && 'Send Message'}
-                          {formStatus === 'submitting' && 'Sending...'}
-                          {formStatus === 'success' && 'Message Sent!'}
-                          {formStatus === 'error' && 'Try Again'}
-                        </motion.button>
-                      </motion.div>
-                    </form>
+                          <label htmlFor="name" className="block text-white/80 font-medium mb-2">Name</label>
+                          <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            value={formState.name}
+                            onChange={handleInputChange}
+                            className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white placeholder:text-white/40 focus:outline-none focus:border-white/30 focus:ring-1 focus:ring-white/30 transition-colors"
+                            placeholder="Your Name"
+                            disabled={formStatus === 'submitting'}
+                            required
+                          />
+                        </motion.div>
+                        
+                        <motion.div 
+                          custom={2}
+                          initial="hidden"
+                          animate="visible"
+                          variants={formVariants}
+                        >
+                          <label htmlFor="email" className="block text-white/80 font-medium mb-2">Email</label>
+                          <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            value={formState.email}
+                            onChange={handleInputChange}
+                            className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white placeholder:text-white/40 focus:outline-none focus:border-white/30 focus:ring-1 focus:ring-white/30 transition-colors"
+                            placeholder="your.email@example.com"
+                            disabled={formStatus === 'submitting'}
+                            required
+                          />
+                        </motion.div>
+                        
+                        <motion.div 
+                          custom={3}
+                          initial="hidden"
+                          animate="visible"
+                          variants={formVariants}
+                        >
+                          <label htmlFor="message" className="block text-white/80 font-medium mb-2">Message</label>
+                          <textarea
+                            id="message"
+                            name="message"
+                            value={formState.message}
+                            onChange={handleInputChange}
+                            rows={5}
+                            className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white placeholder:text-white/40 focus:outline-none focus:border-white/30 focus:ring-1 focus:ring-white/30 transition-colors resize-none"
+                            placeholder="Tell me about your project or inquiry..."
+                            disabled={formStatus === 'submitting'}
+                            required
+                          />
+                        </motion.div>
+                        
+                        <motion.div 
+                          custom={4}
+                          initial="hidden"
+                          animate="visible"
+                          variants={formVariants}
+                        >
+                          <div className="relative inline-block w-full rounded-2xl border border-white/10 p-2 transition-all duration-300 hover:border-white/20">
+                            <GlowingEffect
+                              spread={40}
+                              glow={true}
+                              disabled={formStatus === 'submitting' || formStatus === 'success'}
+                              proximity={64}
+                              inactiveZone={0.01}
+                            />
+                            <motion.button
+                              whileHover={{ scale: 1.02 }}
+                              whileTap={{ scale: 0.98 }}
+                              type="submit"
+                              disabled={formStatus === 'submitting' || formStatus === 'success'}
+                              className={`w-full py-3 rounded-xl border-white/10 backdrop-blur-sm text-white font-medium transition-all ${
+                                formStatus === 'success' 
+                                  ? 'bg-green-500/20' 
+                                  : formStatus === 'submitting'
+                                    ? 'bg-black/40 opacity-70'
+                                    : 'bg-black/40'
+                              }`}
+                            >
+                              {formStatus === 'idle' && 'Send Message'}
+                              {formStatus === 'submitting' && 'Sending...'}
+                              {formStatus === 'success' && 'Message Sent!'}
+                              {formStatus === 'error' && 'Try Again'}
+                            </motion.button>
+                          </div>
+                        </motion.div>
+                      </form>
+                    </div>
                   </motion.div>
                 </motion.div>
                 
                 {/* Contact Information */}
                 <motion.div 
-                  className="space-y-8"
+                  className="space-y-6 pb-8"
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.5 }}
                 >
                   <motion.div 
-                    className="backdrop-blur-lg bg-white/5 rounded-2xl p-6 md:p-8 border border-white/10"
+                    className="relative rounded-2xl border border-white/10 p-2 transition-all duration-300 hover:border-white/20"
                     whileHover={{ y: -5 }}
                     transition={{ duration: 0.4 }}
                   >
-                    <h2 className="text-2xl font-bold text-white mb-6 font-display">Contact Info</h2>
-                    <div className="space-y-6">
-                      {contactMethods.map((method, index) => (
-                        <motion.a
-                          key={method.title}
-                          href={method.link}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center group"
-                          initial={{ opacity: 0, x: 20 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: 0.6 + (index * 0.1), duration: 0.6 }}
-                          whileHover={{ x: 5 }}
-                        >
-                          <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-xl mr-4">
-                            {method.icon}
-                          </div>
-                          <div>
-                            <h3 className="text-white font-medium">{method.title}</h3>
-                            <p className="text-white/70 group-hover:text-white/90 transition-colors">{method.value}</p>
-                          </div>
-                        </motion.a>
-                      ))}
+                    <GlowingEffect
+                      spread={40}
+                      glow={true}
+                      disabled={false}
+                      proximity={64}
+                      inactiveZone={0.01}
+                    />
+                    <div className="relative rounded-xl border-white/10 p-6 md:p-8 bg-black/40 backdrop-blur-sm">
+                      <h2 className="text-2xl font-bold text-white mb-6 font-display">Contact Info</h2>
+                      <div className="space-y-3 max-h-[60vh] overflow-y-auto overflow-x-hidden pr-2">
+                        {contactMethods.map((method, index) => (
+                          <motion.div
+                            key={method.title}
+                            initial={{ opacity: 0, x: 10 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: 0.6 + (index * 0.1), duration: 0.6 }}
+                            className="relative rounded-2xl border border-white/10 p-1 transition-all duration-300 hover:border-white/20 overflow-hidden"
+                          >
+                            <GlowingEffect
+                              spread={40}
+                              glow={true}
+                              disabled={false}
+                              proximity={64}
+                              inactiveZone={0.01}
+                            />
+                            <motion.a
+                              href={method.link}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex items-center group relative rounded-xl border-white/10 p-2 bg-black/40 backdrop-blur-sm"
+                              whileHover={{ x: 5 }}
+                            >
+                              <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-lg mr-3">
+                                {method.icon}
+                              </div>
+                              <div>
+                                <h3 className="text-white font-medium text-sm">
+                                  {method.title}
+                                </h3>
+                                <p className="text-white/70 group-hover:text-white/90 transition-colors text-xs">
+                                  {method.value}
+                                </p>
+                              </div>
+                            </motion.a>
+                          </motion.div>
+                        ))}
+                      </div>
                     </div>
                   </motion.div>
                   
                   <motion.div
-                    className="backdrop-blur-lg bg-white/5 rounded-2xl p-6 md:p-8 border border-white/10"
+                    className="relative rounded-2xl border border-white/10 p-1 transition-all duration-300 hover:border-white/20"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.7, duration: 0.6 }}
                     whileHover={{ y: -5 }}
                   >
-                    <h2 className="text-2xl font-bold text-white mb-4 font-display">Location</h2>
-                    <p className="text-white/70 mb-2">San Jose, California</p>
-                    <p className="text-white/70">Available for remote work and collaborations worldwide</p>
+                    <GlowingEffect
+                      spread={40}
+                      glow={true}
+                      disabled={false}
+                      proximity={64}
+                      inactiveZone={0.01}
+                    />
+                    <div className="relative rounded-xl border-white/10 p-4 bg-black/40 backdrop-blur-sm">
+                      <h2 className="text-lg font-bold text-white mb-2 font-display">Location</h2>
+                      <p className="text-white/70 text-sm mb-1">San Jose, California</p>
+                      <p className="text-white/70 text-sm">Available for remote work and collaborations worldwide</p>
+                    </div>
                   </motion.div>
                 </motion.div>
               </div>

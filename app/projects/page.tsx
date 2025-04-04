@@ -3,6 +3,9 @@
 import { motion } from 'framer-motion'
 import { ThreeDMarquee } from "@/components/ui/3d-marquee";
 import dynamic from 'next/dynamic'
+import { GlowingEffect } from "@/components/ui/glowing-effect"
+import Link from 'next/link'
+import Button from '@/components/ui/Button'
 
 // Dynamically import background
 const StarsBackground = dynamic(() => import('@/components/ui/StarsBackground'), {
@@ -33,14 +36,6 @@ export default function Projects() {
           >
             My Projects
           </motion.h1>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-            className="text-xl text-white/80 max-w-2xl mx-auto mb-12"
-          >
-            A showcase of my work spanning AI, finance, and web development
-          </motion.p>
           <motion.div
             initial={{ scaleX: 0 }}
             animate={{ scaleX: 1 }}
@@ -51,7 +46,7 @@ export default function Projects() {
       </div>
       
       {/* Projects Section with 3D Marquee - Centered */}
-      <div className="relative z-10 py-10">
+      <div className="relative z-10 py-2">
         <div className="container mx-auto px-6 flex justify-center items-center">
           <motion.div
             initial={{ opacity: 0 }}
@@ -102,12 +97,7 @@ export default function Projects() {
             whileTap={{ scale: 0.95 }}
             className="inline-block"
           >
-            <a
-              href="/contact"
-              className="bg-white text-gray-900 px-8 py-4 rounded-full text-lg font-medium hover:bg-white/90 transition-colors"
-            >
-              Contact Me
-            </a>
+            <Button href="/contact" size="lg">Contact Me</Button>
           </motion.div>
         </div>
       </div>

@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useCallback } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -9,8 +9,41 @@ import Image from 'next/image'
 import { CodeCard } from '@/components/ui/CodeCard'
 import { GlowingEffect } from "@/components/ui/glowing-effect"
 import { Box, Palette, Laptop, Sparkles, Code, User, Briefcase } from "lucide-react"
+import './no-scrollbar.css'
+import AboutNavigation from "@/app/AboutNavigation"
 
 gsap.registerPlugin(ScrollTrigger)
+
+// Scroll configuration - adjust these values to control scroll amounts
+const scrollConfig = {
+  introSection: { height: '100vh', tailwindHeight: 'min-h-screen' },
+  aboutMeSection: { height: '200vh', tailwindHeight: 'min-h-[200vh]' },
+  whatIDoSection: { height: '200vh', tailwindHeight: 'min-h-[200vh]' },
+  capabilitiesSection: { height: '500vh', tailwindHeight: 'min-h-[500vh]' },
+  // Animation ranges for each section
+  animations: {
+    aboutMe: {
+      title: { start: 0, end: 0.1 },
+      firstCard: { start: 0.1, end: 0.2 },
+      secondCard: { start: 0.2, end: 0.3 },
+      fadeOut: { start: 0.6, end: 0.7 }
+    },
+    whatIDo: {
+      fadeIn: { start: 0, end: 0.2 },
+      firstCard: { start: 0.1, end: 0.2 },
+      secondCard: { start: 0.2, end: 0.3 },
+      fadeOut: { start: 0.7, end: 0.95 }
+    },
+    capabilities: {
+      scroll: {
+        start: 0, 
+        scrollStart: 0.1, 
+        scrollEnd: 0.9, 
+        end: 1
+      }
+    }
+  }
+}
 
 // Define capabilities to display with parallax effect
 const capabilities = [
@@ -28,7 +61,17 @@ const capabilities = [
   "Expo Development"
 ]
 
-export default function ContentSection() {
+interface ContentSectionProps {
+  skipRenderNavigation?: boolean;
+  activeSection?: string | null;
+  setActiveSection?: (section: string) => void;
+}
+
+export default function ContentSection({
+  skipRenderNavigation = false,
+  activeSection: externalActiveSection = null,
+  setActiveSection: externalSetActiveSection
+}: ContentSectionProps) {
   const { lenis } = useLenisScroll()
   const sectionRef = useRef<HTMLElement>(null)
   const capabilitiesRef = useRef<HTMLDivElement>(null)
@@ -61,7 +104,12 @@ export default function ContentSection() {
   })
 
   // State to track active section
-  const [activeSection, setActiveSection] = useState<string | null>(null);
+  const [internalActiveSection, setInternalActiveSection] = useState<string | null>('intro-section');
+  
+  // Use external or internal active section state
+  const activeSection = externalActiveSection !== null ? externalActiveSection : internalActiveSection;
+  const setActiveSection = externalSetActiveSection || setInternalActiveSection;
+  
   // Add cooldown tracking to prevent rapid snapping
   const [isScrolling, setIsScrolling] = useState(false);
   // Ref to track the last scroll time
@@ -76,20 +124,27 @@ export default function ContentSection() {
       y: 100,
     })
 
-    // Show the section when scrolling past the hero
-    gsap.to(sectionRef.current, {
+    // Show the section when scrolling past the hero - but only once
+    const showAnimation = gsap.to(sectionRef.current, {
       opacity: 1,
       y: 0,
       duration: 1,
       ease: 'power3.out',
+      paused: true, // Start paused
       scrollTrigger: {
         trigger: sectionRef.current,
         start: 'top 80%',
         end: 'top 20%',
         scrub: false,
         toggleActions: 'play none none reverse',
+        // Important: once true prevents the animation from replaying
+        // when navigating back to this section
+        once: true, 
       },
     })
+
+    // Play the animation (triggered by scrollTrigger)
+    showAnimation.play();
 
     // Set up a manual wheel event handler to detect user scrolling
     const handleWheel = () => {
@@ -98,74 +153,85 @@ export default function ContentSection() {
 
     window.addEventListener('wheel', handleWheel, { passive: true });
 
+    // Add a touch event handler for mobile
+    const handleTouch = () => {
+      lastScrollTime.current = Date.now();
+    };
+
+    window.addEventListener('touchmove', handleTouch, { passive: true });
+
     // Set up scroll snap observer
     const observer = new IntersectionObserver(
       (entries) => {
         // Don't process if we're currently in a cooling down period
         if (isScrolling) return;
         
-        // Only process if user hasn't scrolled manually in the last 500ms
+        // Only process if user hasn't scrolled manually in the last 800ms
         const now = Date.now();
-        if (now - lastScrollTime.current < 500) return;
+        if (now - lastScrollTime.current < 800) return;
 
         entries.forEach((entry) => {
-          // When a section is 60% visible, snap to it (higher threshold is less aggressive)
-          if (entry.isIntersecting && entry.intersectionRatio > 0.6) {
-            const id = entry.target.getAttribute('data-section');
+          // Only process when a section is substantially visible (70%+)
+          if (entry.isIntersecting && entry.intersectionRatio > 0.7) {
+            const id = entry.target.getAttribute('data-section') || entry.target.id;
             if (id && id !== activeSection) {
+              // Just update the active section without triggering scroll
               setActiveSection(id);
-              setIsScrolling(true);
-              
-              // Use lenis for smoother scrolling if available
-              if (lenis) {
-                lenis.scrollTo(entry.target as HTMLElement, { 
-                  offset: 0,
-                  duration: 1.2,
-                  easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t))
-                });
-              } else {
-                // Fallback to standard scrollIntoView
-                entry.target.scrollIntoView({ 
-                  behavior: 'smooth',
-                  block: 'start'
-                });
-              }
-              
-              // Add a cooldown period to prevent rapid consecutive snaps
-              setTimeout(() => {
-                setIsScrolling(false);
-              }, 1500);
             }
           }
         });
       },
       { 
         // Higher threshold makes it less aggressive, only snap when section is clearly visible
-        threshold: [0.6, 0.8] 
+        threshold: [0.7, 0.8, 0.9],
+        rootMargin: "-10% 0px -10% 0px" // Slightly shrink the effective viewport for more reliable detection
       }
     );
 
     // Observe the sections
+    if (introBannerRef.current) {
+      introBannerRef.current.setAttribute('data-section', 'intro-section');
+      observer.observe(introBannerRef.current);
+    }
     if (aboutMeRef.current) {
-      aboutMeRef.current.setAttribute('data-section', 'about-me');
+      aboutMeRef.current.setAttribute('data-section', 'about-me-section');
       observer.observe(aboutMeRef.current);
     }
     if (whatIDoRef.current) {
-      whatIDoRef.current.setAttribute('data-section', 'what-i-do');
+      whatIDoRef.current.setAttribute('data-section', 'what-i-do-section');
       observer.observe(whatIDoRef.current);
+    }
+    if (capabilitiesRef.current) {
+      capabilitiesRef.current.setAttribute('data-section', 'capabilities-section');
+      observer.observe(capabilitiesRef.current);
     }
 
     return () => {
       observer.disconnect();
       window.removeEventListener('wheel', handleWheel);
+      window.removeEventListener('touchmove', handleTouch);
+      // Clean up GSAP animations
+      showAnimation.kill();
     };
-  }, [lenis, activeSection, isScrolling])
+  }, [/* Empty dependency array ensures this only runs once */]);
 
   return (
     <section ref={sectionRef} className="relative pt-0 pb-48 scroll-smooth">
+      {/* Use the new AboutNavigation component */}
+      {!skipRenderNavigation && (
+        <AboutNavigation 
+          activeSection={activeSection}
+          setActiveSection={setActiveSection}
+          introBannerProgress={introBannerProgress}
+          aboutMeProgress={aboutMeProgress}
+          whatIDoProgress={whatIDoProgress}
+          capabilitiesProgress={capabilitiesProgress}
+        />
+      )}
+
       <div className="container-custom relative">
         {/* Intro Banner Section */}
-        <div ref={introBannerRef} className="min-h-screen mb-32 snap-start">
+        <div ref={introBannerRef} className={`${scrollConfig.introSection.tailwindHeight} mb-32 snap-start`} id="intro-section">
           <div className="sticky top-0 py-24 flex items-center justify-center min-h-screen">
             <div className="container-custom w-full max-w-6xl">
               <motion.div 
@@ -234,27 +300,6 @@ export default function ContentSection() {
                   </motion.div>
                 </motion.div>
               </motion.div>
-              
-              {/* Scroll indicator */}
-              <motion.div 
-                className="absolute left-1/2 -translate-x-1/2 bottom-8 md:bottom-12 flex flex-col items-center w-full max-w-[200px] mx-auto px-4"
-                style={{ opacity: useTransform(introBannerProgress, [0, 0.3], [1, 0]) }}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 2, duration: 0.8 }}
-              >
-                <p className="text-white/70 mb-2 font-body text-center text-sm md:text-base">Scroll to explore</p>
-                <motion.div 
-                  className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center p-1"
-                  initial={{ opacity: 0.5 }}
-                >
-                  <motion.div 
-                    className="w-1.5 h-1.5 bg-white/50 rounded-full"
-                    animate={{ y: [0, 12, 0] }}
-                    transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-                  />
-                </motion.div>
-              </motion.div>
             </div>
           </div>
         </div>
@@ -262,7 +307,7 @@ export default function ContentSection() {
         {/* About Me Section */}
         <div 
           ref={aboutMeRef} 
-          className="relative min-h-[300vh] mb-32 snap-start scroll-mt-24" 
+          className={`relative ${scrollConfig.aboutMeSection.tailwindHeight} mb-32 snap-start scroll-mt-24`}
           id="about-me-section"
         >
           <div className="sticky top-0 py-24 flex items-center justify-center min-h-screen">
@@ -277,9 +322,21 @@ export default function ContentSection() {
                 className="absolute inset-0 flex items-center justify-center overflow-hidden"
                 initial={{ opacity: 1 }}
                 style={{ 
-                  opacity: useTransform(aboutMeProgress, [0, 0.1], [1, 0]),
-                  filter: useTransform(aboutMeProgress, [0, 0.1], ["blur(0px)", "blur(20px)"]),
-                  scale: useTransform(aboutMeProgress, [0, 0.1], [1, 1.5])
+                  opacity: useTransform(
+                    aboutMeProgress, 
+                    [scrollConfig.animations.aboutMe.title.start, scrollConfig.animations.aboutMe.title.end], 
+                    [1, 0]
+                  ),
+                  filter: useTransform(
+                    aboutMeProgress, 
+                    [scrollConfig.animations.aboutMe.title.start, scrollConfig.animations.aboutMe.title.end], 
+                    ["blur(0px)", "blur(20px)"]
+                  ),
+                  scale: useTransform(
+                    aboutMeProgress, 
+                    [scrollConfig.animations.aboutMe.title.start, scrollConfig.animations.aboutMe.title.end], 
+                    [1, 1.5]
+                  )
                 }}
               >
                 <div className="relative">
@@ -328,11 +385,49 @@ export default function ContentSection() {
               <motion.div 
                 className="relative rounded-2xl border border-white/10 p-2 transition-all duration-300 hover:border-white/20"
                 style={{ 
-                  opacity: useTransform(aboutMeProgress, [0.1, 0.2, 0.6, 0.7], [0, 1, 1, 0]),
-                  y: useTransform(aboutMeProgress, [0.1, 0.2, 0.6, 0.7], [50, 0, 0, -50]),
-                  rotateX: useTransform(aboutMeProgress, [0.1, 0.2, 0.55, 0.65], [10, 0, 0, 10]),
-                  rotateY: useTransform(aboutMeProgress, [0.2, 0.3, 0.55, 0.65], [-5, 0, 0, 5]),
-                  scale: useTransform(aboutMeProgress, [0.1, 0.15, 0.55, 0.65], [0.9, 1, 1, 0.9]),
+                  opacity: useTransform(
+                    aboutMeProgress, 
+                    [
+                      scrollConfig.animations.aboutMe.firstCard.start, 
+                      scrollConfig.animations.aboutMe.firstCard.end, 
+                      scrollConfig.animations.aboutMe.fadeOut.start, 
+                      scrollConfig.animations.aboutMe.fadeOut.end
+                    ], 
+                    [0, 1, 1, 0]
+                  ),
+                  y: useTransform(
+                    aboutMeProgress, 
+                    [
+                      scrollConfig.animations.aboutMe.firstCard.start, 
+                      scrollConfig.animations.aboutMe.firstCard.end, 
+                      scrollConfig.animations.aboutMe.fadeOut.start, 
+                      scrollConfig.animations.aboutMe.fadeOut.end
+                    ], 
+                    [50, 0, 0, -50]
+                  ),
+                  rotateX: useTransform(
+                    aboutMeProgress, 
+                    [
+                      scrollConfig.animations.aboutMe.firstCard.start, 
+                      scrollConfig.animations.aboutMe.firstCard.end, 
+                      0.55, 0.65
+                    ], 
+                    [10, 0, 0, 10]
+                  ),
+                  rotateY: useTransform(
+                    aboutMeProgress, 
+                    [0.2, 0.3, 0.55, 0.65], 
+                    [-5, 0, 0, 5]
+                  ),
+                  scale: useTransform(
+                    aboutMeProgress, 
+                    [
+                      scrollConfig.animations.aboutMe.firstCard.start, 
+                      scrollConfig.animations.aboutMe.firstCard.end - 0.05, 
+                      0.55, 0.65
+                    ], 
+                    [0.9, 1, 1, 0.9]
+                  ),
                   perspective: "1000px"
                 }}
               >
@@ -418,7 +513,7 @@ export default function ContentSection() {
         {/* What I Do Section */}
         <div 
           ref={whatIDoRef} 
-          className="relative min-h-[300vh] mb-32 snap-start scroll-mt-24" 
+          className={`relative ${scrollConfig.whatIDoSection.tailwindHeight} mb-32 snap-start scroll-mt-24`}
           id="what-i-do-section"
         >
           <div className="sticky top-0 py-24 flex items-center justify-center min-h-screen">
@@ -426,10 +521,42 @@ export default function ContentSection() {
               <motion.div 
                 className="relative rounded-2xl border border-white/10 p-2 transition-all duration-300 hover:border-white/20"
                 style={{ 
-                  opacity: useTransform(whatIDoProgress, [0, 0.2, 0.7, 0.95], [0, 1, 1, 0]),
-                  y: useTransform(whatIDoProgress, [0, 0.2, 0.7, 0.95], [100, 0, 0, -50]),
-                  scale: useTransform(whatIDoProgress, [0, 0.1, 0.7, 0.9], [0.9, 1, 1, 0.9]),
-                  rotateX: useTransform(whatIDoProgress, [0, 0.2, 0.7, 0.9], [10, 0, 0, -10])
+                  opacity: useTransform(whatIDoProgress, 
+                    [
+                      scrollConfig.animations.whatIDo.fadeIn.start, 
+                      scrollConfig.animations.whatIDo.fadeIn.end, 
+                      scrollConfig.animations.whatIDo.fadeOut.start, 
+                      scrollConfig.animations.whatIDo.fadeOut.end
+                    ], 
+                    [0, 1, 1, 0]
+                  ),
+                  y: useTransform(whatIDoProgress, 
+                    [
+                      scrollConfig.animations.whatIDo.fadeIn.start, 
+                      scrollConfig.animations.whatIDo.fadeIn.end, 
+                      scrollConfig.animations.whatIDo.fadeOut.start, 
+                      scrollConfig.animations.whatIDo.fadeOut.end
+                    ], 
+                    [100, 0, 0, -50]
+                  ),
+                  scale: useTransform(whatIDoProgress, 
+                    [
+                      scrollConfig.animations.whatIDo.fadeIn.start, 
+                      scrollConfig.animations.whatIDo.fadeIn.start + 0.1, 
+                      scrollConfig.animations.whatIDo.fadeOut.start, 
+                      scrollConfig.animations.whatIDo.fadeOut.start + 0.2
+                    ], 
+                    [0.9, 1, 1, 0.9]
+                  ),
+                  rotateX: useTransform(whatIDoProgress, 
+                    [
+                      scrollConfig.animations.whatIDo.fadeIn.start, 
+                      scrollConfig.animations.whatIDo.fadeIn.end, 
+                      scrollConfig.animations.whatIDo.fadeOut.start, 
+                      scrollConfig.animations.whatIDo.fadeOut.start + 0.2
+                    ], 
+                    [10, 0, 0, -10]
+                  )
                 }}
               >
                 <GlowingEffect
@@ -526,7 +653,7 @@ export default function ContentSection() {
         {/* Capabilities Section */}
         <div 
           ref={capabilitiesRef} 
-          className="py-32 min-h-[800vh] snap-start scroll-mt-24"
+          className={`py-32 ${scrollConfig.capabilitiesSection.tailwindHeight} snap-start scroll-mt-24`}
           id="capabilities-section"
         >
           <div className="sticky top-0 py-24 flex flex-col items-center justify-center min-h-screen overflow-hidden">
@@ -541,24 +668,10 @@ export default function ContentSection() {
                   inactiveZone={0.01}
                 />
                 <div className="relative flex h-full flex-col justify-between gap-6 overflow-hidden rounded-xl border-white/10 p-8 bg-black/40 backdrop-blur-sm">
-                  {/* Enhanced background effects */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 via-purple-500/5 to-pink-500/5 z-0"></div>
-                  <div className="absolute -right-10 -top-10 w-40 h-40 bg-blue-500/10 rounded-full blur-3xl"></div>
-                  <div className="absolute -left-10 -bottom-10 w-40 h-40 bg-purple-500/10 rounded-full blur-3xl"></div>
+                  {/* Remove all background effect divs */}
                   
                   <motion.h2
-                    className="text-5xl md:text-7xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-500 to-pink-500 mb-6 text-center font-display z-10 relative"
-                    animate={{ 
-                      backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"] 
-                    }}
-                    transition={{ 
-                      duration: 5, 
-                      ease: "linear", 
-                      repeat: 0 
-                    }}
-                    style={{ 
-                      backgroundSize: "200% 200%"
-                    }}
+                    className="text-5xl md:text-7xl font-bold text-white mb-6 text-center font-display z-10 relative"
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
@@ -584,7 +697,12 @@ export default function ContentSection() {
                   className="flex space-x-6 px-4 py-4"
                   style={{
                     x: useTransform(capabilitiesProgress, 
-                      [0, 0.1, 0.9, 1],
+                      [
+                        scrollConfig.animations.capabilities.scroll.start,
+                        scrollConfig.animations.capabilities.scroll.scrollStart,
+                        scrollConfig.animations.capabilities.scroll.scrollEnd,
+                        scrollConfig.animations.capabilities.scroll.end
+                      ],
                       [100, 0, -2400, -2500])
                   }}
                 >
@@ -613,11 +731,7 @@ export default function ContentSection() {
                         inactiveZone={0.01}
                       />
                       {/* Card with floating elements and better spacing */}
-                      <div className="relative flex h-full flex-col justify-between overflow-hidden rounded-xl border-white/10 p-6 bg-gradient-to-br from-black/40 to-black/60 backdrop-blur-sm">
-                        {/* Background accent */}
-                        <div className={`absolute -right-4 -bottom-4 w-20 h-20 rounded-full blur-2xl opacity-20 ${
-                          index % 3 === 0 ? 'bg-blue-500' : index % 3 === 1 ? 'bg-purple-500' : 'bg-pink-500'
-                        }`}></div>
+                      <div className="relative flex h-full flex-col justify-between overflow-hidden rounded-xl border-white/10 p-6 bg-black/40 backdrop-blur-sm">
                         
                         <div className="w-fit rounded-lg border border-white/20 p-2 bg-black/30 backdrop-blur-md">
                           <span className="text-white/80 text-xl">{index % 3 === 0 ? '⚙️' : index % 3 === 1 ? '💻' : '🚀'}</span>
@@ -635,26 +749,6 @@ export default function ContentSection() {
                 <div className="absolute top-0 left-0 h-full w-32 bg-gradient-to-r from-gray-950 to-transparent z-10"></div>
                 <div className="absolute top-0 right-0 h-full w-32 bg-gradient-to-l from-gray-950 to-transparent z-10"></div>
               </div>
-              
-              {/* Modern scroll indicator */}
-              <motion.div 
-                className="flex justify-center items-center mt-12 text-white"
-                initial={{ opacity: 1 }}
-                style={{ opacity: useTransform(capabilitiesProgress, [0, 0.8], [1, 0]) }}
-              >
-                <div className="px-5 py-2.5 bg-white/10 backdrop-blur-md rounded-full flex items-center space-x-3 border border-white/5 shadow-[0_0_10px_rgba(255,255,255,0.1)]">
-                  <p className="text-sm font-body text-white/90">Scroll to explore more</p>
-                  <motion.div
-                    animate={{ x: [0, 5, 0] }}
-                    transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-                    className="text-white/90"
-                  >
-                    <svg width="18" height="18" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                  </motion.div>
-                </div>
-              </motion.div>
             </div>
           </div>
         </div>
@@ -675,12 +769,21 @@ export default function ContentSection() {
             whileTap={{ scale: 0.95 }}
             className="inline-block"
           >
-            <a
-              href="/contact"
-              className="bg-white text-gray-950 px-8 py-4 rounded-full text-lg font-medium hover:bg-white/90 transition-colors duration-300 font-body"
-            >
-              Get in Touch
-            </a>
+            <div className="relative inline-block rounded-2xl border border-white/10 p-2 transition-all duration-300 hover:border-white/20">
+              <GlowingEffect
+                spread={40}
+                glow={true}
+                disabled={false}
+                proximity={64}
+                inactiveZone={0.01}
+              />
+              <a
+                href="/contact"
+                className="relative rounded-xl border-white/10 inline-block bg-black/40 backdrop-blur-sm text-white px-8 py-4 text-lg font-medium transition-colors duration-300 font-body"
+              >
+                Get in Touch
+              </a>
+            </div>
           </motion.div>
         </div>
       </div>

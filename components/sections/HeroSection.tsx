@@ -7,6 +7,8 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useScroll as useLenisScroll } from '@/context/ScrollContext'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
+import { GlowingEffect } from '@/components/ui/glowing-effect'
+import Button from '@/components/ui/Button'
 
 const StarsBackground = dynamic(() => import('@/components/ui/StarsBackground'), {
   ssr: false,
@@ -113,12 +115,7 @@ export default function HeroSection() {
             transition={{ duration: 0.5, delay: 0.4 }}
             className="flex justify-center"
           >
-            <Link
-              href="/projects"
-              className="inline-block bg-white/10 hover:bg-white/20 text-white font-medium py-3 px-6 rounded-lg transition-colors"
-            >
-              View Projects
-            </Link>
+            <Button href="/projects">View Projects</Button>
           </motion.div>
         </div>
 
