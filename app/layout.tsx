@@ -10,6 +10,7 @@ import { ScrollProvider } from "@/context/ScrollContext";
 import { CursorProvider } from "@/context/CursorContext";
 import { ContactProvider } from "@/context/ContactContext";
 import ScrollToTop from "./ScrollToTop";
+import { Analytics } from "@vercel/analytics/react";
 
 // Dynamically import non-critical UI components
 const Cursor = dynamic(() => import('@/components/ui/Cursor'), {
@@ -68,6 +69,7 @@ export default function RootLayout({
             </ContactProvider>
           </CursorProvider>
         </ScrollProvider>
+        <Analytics />
       </body>
     </html>
   );
