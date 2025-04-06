@@ -10,7 +10,7 @@ import { CodeCard } from '@/components/ui/CodeCard'
 import { GlowingEffect } from "@/components/ui/glowing-effect"
 import { Box, Palette, Laptop, Sparkles, Code, User, Briefcase } from "lucide-react"
 import './no-scrollbar.css'
-import AboutNavigation from "@/app/AboutNavigation"
+import AboutNavigation from "@/components/layout/AboutNavigation"
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -247,7 +247,7 @@ export default function ContentSection({
                   }}
                 >
                   <motion.h1 
-                    className="text-5xl md:text-7xl font-bold text-white font-display leading-tight mb-8"
+                    className="text-5xl md:text-7xl font-bold dark:text-white text-light-foreground font-display leading-tight mb-8 transition-colors duration-300"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2, duration: 0.8 }}
@@ -275,7 +275,7 @@ export default function ContentSection({
                   </motion.h1>
 
                   <motion.p 
-                    className="text-xl md:text-2xl text-white/80 font-body mb-10 max-w-lg"
+                    className="text-xl md:text-2xl dark:text-white/80 text-light-foreground/80 font-body mb-10 max-w-lg transition-colors duration-300"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.5, duration: 0.8 }}
@@ -383,7 +383,7 @@ export default function ContentSection({
                   0.4-0.5: Fade out and slide up
               */}
               <motion.div 
-                className="relative rounded-2xl border border-white/10 p-2 transition-all duration-300 hover:border-white/20"
+                className="relative rounded-2xl border dark:border-white/10 border-light-accent/20 p-2 transition-all duration-300 dark:hover:border-white/20 hover:border-light-accent/30"
                 style={{ 
                   opacity: useTransform(
                     aboutMeProgress, 
@@ -439,16 +439,16 @@ export default function ContentSection({
                   inactiveZone={0.01}
                 />
                 
-                <div className="relative flex h-full flex-col justify-between gap-6 overflow-hidden rounded-xl border-white/10 p-6 bg-black/40 backdrop-blur-sm">
+                <div className="relative flex h-full flex-col justify-between gap-6 overflow-hidden rounded-xl border-white/10 p-6 dark:bg-black/40 bg-white/70 backdrop-blur-sm transition-colors duration-300">
                   <div className="grid md:grid-cols-[1fr_2fr] gap-6 relative z-10">
                     {/* Space for a photo */}
-                    <div className="hidden md:flex items-center justify-center rounded-2xl border border-white/10 bg-black/20 backdrop-blur-sm">
+                    <div className="hidden md:flex items-center justify-center rounded-2xl border dark:border-white/10 border-light-accent/20 dark:bg-black/20 bg-white/50 backdrop-blur-sm transition-colors duration-300">
                       {/* Photo will go here */}
                     </div>
                     
                     <div className="space-y-6">
                       <motion.div 
-                        className="relative border border-white/10 p-2 rounded-2xl transition-all duration-300 hover:border-white/20"
+                        className="relative border dark:border-white/10 border-light-accent/20 p-2 rounded-2xl transition-all duration-300 dark:hover:border-white/20 hover:border-light-accent/30"
                         style={{
                           y: useTransform(aboutMeProgress, [0.1, 0.2], [30, 0]),
                           opacity: useTransform(aboutMeProgress, [0.1, 0.2], [0, 1]),
@@ -462,12 +462,12 @@ export default function ContentSection({
                           proximity={64}
                           inactiveZone={0.01}
                         />
-                        <div className="relative rounded-xl border-white/10 p-4 bg-black/40 backdrop-blur-sm">
-                          <div className="w-fit rounded-lg border border-white/20 p-2 bg-white/5 mb-3">
-                            <User className="h-4 w-4 text-white" />
+                        <div className="relative rounded-xl border-white/10 p-4 dark:bg-black/40 bg-white/70 backdrop-blur-sm transition-colors duration-300">
+                          <div className="w-fit rounded-lg border dark:border-white/20 border-light-accent/20 p-2 dark:bg-white/5 bg-light-accent/5 mb-3 transition-colors duration-300">
+                            <User className="h-4 w-4 dark:text-white text-light-foreground transition-colors duration-300" />
                           </div>
-                          <h4 className="text-xl font-medium text-white/90 mb-3 font-display">About Me</h4>
-                          <p className="text-white/80 leading-relaxed font-body">
+                          <h4 className="text-xl font-medium dark:text-white/90 text-light-foreground mb-3 font-display transition-colors duration-300">About Me</h4>
+                          <p className="dark:text-white/80 text-light-foreground/80 leading-relaxed font-body transition-colors duration-300">
                             Hi! I'm Kaiyuan Li, a senior from San Jose, California. I was born in China and moved to the US when I was 10.
                             I'll be heading to Northeastern University this fall to study Business and Computer Science.
                           </p>
@@ -475,7 +475,7 @@ export default function ContentSection({
                       </motion.div>
                       
                       <motion.div 
-                        className="relative border border-white/10 p-2 rounded-2xl transition-all duration-300 hover:border-white/20"
+                        className="relative border dark:border-white/10 border-light-accent/20 p-2 rounded-2xl transition-all duration-300 dark:hover:border-white/20 hover:border-light-accent/30"
                         style={{
                           y: useTransform(aboutMeProgress, [0.2, 0.3], [30, 0]),
                           opacity: useTransform(aboutMeProgress, [0.2, 0.3], [0, 1]),
@@ -489,12 +489,12 @@ export default function ContentSection({
                           proximity={64}
                           inactiveZone={0.01}
                         />
-                        <div className="relative rounded-xl border-white/10 p-4 bg-black/40 backdrop-blur-sm">
-                          <div className="w-fit rounded-lg border border-white/20 p-2 bg-white/5 mb-3">
-                            <Sparkles className="h-4 w-4 text-white" />
+                        <div className="relative rounded-xl border-white/10 p-4 dark:bg-black/40 bg-white/70 backdrop-blur-sm transition-colors duration-300">
+                          <div className="w-fit rounded-lg border dark:border-white/20 border-light-accent/20 p-2 dark:bg-white/5 bg-light-accent/5 mb-3 transition-colors duration-300">
+                            <Sparkles className="h-4 w-4 dark:text-white text-light-foreground transition-colors duration-300" />
                           </div>
-                          <h4 className="text-xl font-medium text-white/90 mb-3 font-display">Interests</h4>
-                          <p className="text-white/80 leading-relaxed font-body">
+                          <h4 className="text-xl font-medium dark:text-white/90 text-light-foreground mb-3 font-display transition-colors duration-300">Interests</h4>
+                          <p className="dark:text-white/80 text-light-foreground/80 leading-relaxed font-body transition-colors duration-300">
                             I really like listening to music and play percussion for my school's Wind Ensemble. 
                             Some of my favorite artists are Malcolm Todd, The Neighborhood, Chase Atlantic, and Travis Scott.
                             If you enjoy playing video games, I highly recommend you try out Deep Rock Galactic, Terraria, Risk of Rain 2, and Palworld.
@@ -519,7 +519,7 @@ export default function ContentSection({
           <div className="sticky top-0 py-24 flex items-center justify-center min-h-screen">
             <div className="container-custom w-full max-w-6xl relative">
               <motion.div 
-                className="relative rounded-2xl border border-white/10 p-2 transition-all duration-300 hover:border-white/20"
+                className="relative rounded-2xl border dark:border-white/10 border-light-accent/20 p-2 transition-all duration-300 dark:hover:border-white/20 hover:border-light-accent/30"
                 style={{ 
                   opacity: useTransform(whatIDoProgress, 
                     [
@@ -567,11 +567,11 @@ export default function ContentSection({
                   inactiveZone={0.01}
                 />
                 
-                <div className="relative flex h-full flex-col justify-between gap-6 overflow-hidden rounded-xl border-white/10 p-6 bg-black/40 backdrop-blur-sm">
+                <div className="relative flex h-full flex-col justify-between gap-6 overflow-hidden rounded-xl border-white/10 p-6 dark:bg-black/40 bg-white/70 backdrop-blur-sm transition-colors duration-300">
                   <div className="grid md:grid-cols-[3fr_2fr] gap-6 relative z-10">
                     <div className="space-y-6">
                       <motion.div 
-                        className="relative border border-white/10 p-2 rounded-2xl transition-all duration-300 hover:border-white/20"
+                        className="relative border dark:border-white/10 border-light-accent/20 p-2 rounded-2xl transition-all duration-300 dark:hover:border-white/20 hover:border-light-accent/30"
                         style={{
                           y: useTransform(whatIDoProgress, [0.1, 0.2], [30, 0]),
                           opacity: useTransform(whatIDoProgress, [0.1, 0.2], [0, 1]),
@@ -585,19 +585,19 @@ export default function ContentSection({
                           proximity={64}
                           inactiveZone={0.01}
                         />
-                        <div className="relative rounded-xl border-white/10 p-4 bg-black/40 backdrop-blur-sm">
-                          <div className="w-fit rounded-lg border border-white/20 p-2 bg-white/5 mb-3">
-                            <Code className="h-4 w-4 text-white" />
+                        <div className="relative rounded-xl border-white/10 p-4 dark:bg-black/40 bg-white/70 backdrop-blur-sm transition-colors duration-300">
+                          <div className="w-fit rounded-lg border dark:border-white/20 border-light-accent/20 p-2 dark:bg-white/5 bg-light-accent/5 mb-3 transition-colors duration-300">
+                            <Code className="h-4 w-4 dark:text-white text-light-foreground transition-colors duration-300" />
                           </div>
-                          <h4 className="text-xl font-medium text-white/90 mb-3 font-display">Ling Gang Guli Guli</h4>
-                          <p className="text-white/80 leading-relaxed font-body">
+                          <h4 className="text-xl font-medium dark:text-white/90 text-light-foreground mb-3 font-display transition-colors duration-300">Ling Gang Guli Guli</h4>
+                          <p className="dark:text-white/80 text-light-foreground/80 leading-relaxed font-body transition-colors duration-300">
                             blah-blah-blah-blu-blu-blu-ling-gang-guli
                           </p>
                         </div>
                       </motion.div>
                       
                       <motion.div 
-                        className="relative border border-white/10 p-2 rounded-2xl transition-all duration-300 hover:border-white/20"
+                        className="relative border dark:border-white/10 border-light-accent/20 p-2 rounded-2xl transition-all duration-300 dark:hover:border-white/20 hover:border-light-accent/30"
                         style={{
                           y: useTransform(whatIDoProgress, [0.2, 0.3], [30, 0]),
                           opacity: useTransform(whatIDoProgress, [0.2, 0.3], [0, 1]),
@@ -611,12 +611,12 @@ export default function ContentSection({
                           proximity={64}
                           inactiveZone={0.01}
                         />
-                        <div className="relative rounded-xl border-white/10 p-4 bg-black/40 backdrop-blur-sm">
-                          <div className="w-fit rounded-lg border border-white/20 p-2 bg-white/5 mb-3">
-                            <Briefcase className="h-4 w-4 text-white" />
+                        <div className="relative rounded-xl border-white/10 p-4 dark:bg-black/40 bg-white/70 backdrop-blur-sm transition-colors duration-300">
+                          <div className="w-fit rounded-lg border dark:border-white/20 border-light-accent/20 p-2 dark:bg-white/5 bg-light-accent/5 mb-3 transition-colors duration-300">
+                            <Briefcase className="h-4 w-4 dark:text-white text-light-foreground transition-colors duration-300" />
                           </div>
-                          <h4 className="text-xl font-medium text-white/90 mb-3 font-display">Future Projects</h4>
-                          <ul className="space-y-2 text-white/80 font-body">
+                          <h4 className="text-xl font-medium dark:text-white/90 text-light-foreground mb-3 font-display transition-colors duration-300">Future Projects</h4>
+                          <ul className="space-y-2 dark:text-white/80 text-light-foreground/80 font-body transition-colors duration-300">
                             {[
                               "3D Tetris",
                               "Ran out of ideas",
@@ -640,7 +640,7 @@ export default function ContentSection({
                     </div>
                     
                     {/* Empty space for a photo */}
-                    <div className="hidden md:flex items-center justify-center rounded-2xl border border-white/10 bg-black/20 backdrop-blur-sm">
+                    <div className="hidden md:flex items-center justify-center rounded-2xl border dark:border-white/10 border-light-accent/20 dark:bg-black/20 bg-white/50 backdrop-blur-sm transition-colors duration-300">
                       {/* Photo will go here */}
                     </div>
                   </div>
@@ -659,7 +659,7 @@ export default function ContentSection({
           <div className="sticky top-0 py-24 flex flex-col items-center justify-center min-h-screen overflow-hidden">
             <div className="container-custom w-full max-w-6xl relative">
               {/* Modern title card with enhanced visual effects */}
-              <div className="relative rounded-2xl border border-white/10 p-2 transition-all duration-300 hover:border-white/20 mb-16 shadow-lg">
+              <div className="relative rounded-2xl border dark:border-white/10 border-light-accent/20 p-2 transition-all duration-300 dark:hover:border-white/20 hover:border-light-accent/30 mb-16 shadow-lg">
                 <GlowingEffect
                   spread={60}
                   glow={true}
@@ -667,11 +667,11 @@ export default function ContentSection({
                   proximity={64}
                   inactiveZone={0.01}
                 />
-                <div className="relative flex h-full flex-col justify-between gap-6 overflow-hidden rounded-xl border-white/10 p-8 bg-black/40 backdrop-blur-sm">
+                <div className="relative flex h-full flex-col justify-between gap-6 overflow-hidden rounded-xl border-white/10 p-8 dark:bg-black/40 bg-white/70 backdrop-blur-sm transition-colors duration-300">
                   {/* Remove all background effect divs */}
                   
                   <motion.h2
-                    className="text-5xl md:text-7xl font-bold text-white mb-6 text-center font-display z-10 relative"
+                    className="text-5xl md:text-7xl font-bold dark:text-white text-light-foreground mb-6 text-center font-display z-10 relative transition-colors duration-300"
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
@@ -680,7 +680,7 @@ export default function ContentSection({
                   </motion.h2>
 
                   <motion.p 
-                    className="text-xl md:text-2xl text-white/80 text-center max-w-xl mx-auto font-body relative z-10"
+                    className="text-xl md:text-2xl dark:text-white/80 text-light-foreground/80 text-center max-w-xl mx-auto font-body relative z-10 transition-colors duration-300"
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
@@ -709,7 +709,7 @@ export default function ContentSection({
                   {capabilities.map((capability, index) => (
                     <motion.div
                       key={capability}
-                      className="relative border border-white/10 p-2 rounded-2xl transition-all duration-300 hover:border-white/20 hover:shadow-[0_0_15px_rgba(255,255,255,0.15)] flex-shrink-0 w-80 h-40"
+                      className="relative border dark:border-white/10 border-light-accent/20 p-2 rounded-2xl transition-all duration-300 dark:hover:border-white/20 hover:border-light-accent/30 hover:shadow-[0_0_15px_rgba(255,255,255,0.15)] flex-shrink-0 w-80 h-40"
                       initial={{ opacity: 0 }}
                       whileInView={{ opacity: 1 }}
                       viewport={{ once: true, amount: 0.3 }}
@@ -731,13 +731,13 @@ export default function ContentSection({
                         inactiveZone={0.01}
                       />
                       {/* Card with floating elements and better spacing */}
-                      <div className="relative flex h-full flex-col justify-between overflow-hidden rounded-xl border-white/10 p-6 bg-black/40 backdrop-blur-sm">
+                      <div className="relative flex h-full flex-col justify-between overflow-hidden rounded-xl border-white/10 p-6 dark:bg-black/40 bg-white/70 backdrop-blur-sm transition-colors duration-300">
                         
-                        <div className="w-fit rounded-lg border border-white/20 p-2 bg-black/30 backdrop-blur-md">
-                          <span className="text-white/80 text-xl">{index % 3 === 0 ? '⚙️' : index % 3 === 1 ? '💻' : '🚀'}</span>
+                        <div className="w-fit rounded-lg border dark:border-white/20 border-light-accent/20 p-2 dark:bg-black/30 bg-white/50 backdrop-blur-md transition-colors duration-300">
+                          <span className="dark:text-white/80 text-light-foreground/80 text-xl transition-colors duration-300">{index % 3 === 0 ? '⚙️' : index % 3 === 1 ? '💻' : '🚀'}</span>
                         </div>
                         
-                        <h3 className="text-xl font-medium text-white font-body relative z-10">
+                        <h3 className="text-xl font-medium dark:text-white text-light-foreground font-body relative z-10 transition-colors duration-300">
                           {capability}
                         </h3>
                       </div>
@@ -746,8 +746,8 @@ export default function ContentSection({
                 </motion.div>
                 
                 {/* Enhanced gradient fade on edges */}
-                <div className="absolute top-0 left-0 h-full w-32 bg-gradient-to-r from-gray-950 to-transparent z-10"></div>
-                <div className="absolute top-0 right-0 h-full w-32 bg-gradient-to-l from-gray-950 to-transparent z-10"></div>
+                <div className="absolute top-0 left-0 h-full w-32 bg-gradient-to-r dark:from-gray-950 from-light-background to-transparent z-10 transition-colors duration-300"></div>
+                <div className="absolute top-0 right-0 h-full w-32 bg-gradient-to-l dark:from-gray-950 from-light-background to-transparent z-10 transition-colors duration-300"></div>
               </div>
             </div>
           </div>
@@ -756,7 +756,7 @@ export default function ContentSection({
         {/* Let's Collaborate Section */}
         <div className="max-w-4xl mx-auto text-center pb-24 snap-start">
           <motion.h2
-            className="text-3xl md:text-4xl font-bold text-white mb-12 font-display"
+            className="text-3xl md:text-4xl font-bold dark:text-white text-light-foreground mb-12 font-display transition-colors duration-300"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -769,7 +769,7 @@ export default function ContentSection({
             whileTap={{ scale: 0.95 }}
             className="inline-block"
           >
-            <div className="relative inline-block rounded-2xl border border-white/10 p-2 transition-all duration-300 hover:border-white/20">
+            <div className="relative inline-block rounded-2xl border dark:border-white/10 border-light-accent/20 p-2 transition-all duration-300 dark:hover:border-white/20 hover:border-light-accent/30">
               <GlowingEffect
                 spread={40}
                 glow={true}
@@ -779,7 +779,7 @@ export default function ContentSection({
               />
               <a
                 href="/contact"
-                className="relative rounded-xl border-white/10 inline-block bg-black/40 backdrop-blur-sm text-white px-8 py-4 text-lg font-medium transition-colors duration-300 font-body"
+                className="relative rounded-xl border-white/10 inline-block dark:bg-black/40 bg-white/70 backdrop-blur-sm dark:text-white text-light-foreground px-8 py-4 text-lg font-medium transition-colors duration-300 font-body"
               >
                 Get in Touch
               </a>

@@ -5,6 +5,8 @@ import { usePathname } from 'next/navigation'
 import { useState, useEffect, useRef } from 'react'
 import AnimatedText from '../ui/AnimatedText'
 import { useContact } from '@/context/ContactContext'
+import { useTheme } from '@/context/ThemeContext'
+import ThemeToggle from '../ui/ThemeToggle'
 import { Menu, X, Github, Instagram, ExternalLink } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 
@@ -17,6 +19,7 @@ export default function Navigation() {
   const navRef = useRef<HTMLDivElement>(null)
   const [hoveredLink, setHoveredLink] = useState<string | null>(null)
   const { openContact } = useContact()
+  const { theme } = useTheme()
   
   useEffect(() => {
     // Check if device is mobile
@@ -123,7 +126,7 @@ export default function Navigation() {
         isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-full'
       }`}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 relative">
           {/* Left side */}
           <div className="flex-1 flex items-center">
@@ -137,17 +140,19 @@ export default function Navigation() {
               <AnimatedText
                 text="Kai"
                 isHovered={hoveredLink === 'home'}
-                className={isOnDarkBackground || isMobileMenuOpen ? 'text-white' : 'text-black'}
+                className={`${theme === 'dark' || isMobileMenuOpen ? 'text-white' : 'text-black'} ${isOnDarkBackground ? 'dark:text-white text-black' : 'dark:text-white text-black'}`}
               />
             </Link>
           </div>
           
           {/* Mobile menu button */}
-          <div className="md:hidden flex items-center">
+          <div className="md:hidden flex items-center gap-2">
+            <ThemeToggle mini />
+            
             <button 
               onClick={toggleMobileMenu}
               className={`p-2 rounded-full ${
-                isOnDarkBackground || isMobileMenuOpen ? 'text-white' : 'text-black'
+                isOnDarkBackground || isMobileMenuOpen ? 'text-white' : 'dark:text-white text-black'
               } hover:bg-gray-100/10 z-[60] ${isMobileMenuOpen ? 'bg-white/10' : ''}`}
               aria-label="Toggle mobile menu"
             >
@@ -161,6 +166,21 @@ export default function Navigation() {
           
           {/* Desktop navigation */}
           <div className="hidden md:flex flex-1 items-center justify-end gap-8">
+            {/* Home link - only show on casual page */}
+            {pathname === '/casual' && (
+              <Link 
+                href="/"
+                className={`text-lg transition-colors duration-300`}
+                onMouseEnter={() => setHoveredLink('home-nav')}
+                onMouseLeave={() => setHoveredLink(null)}
+              >
+                <AnimatedText
+                  text="Home"
+                  isHovered={hoveredLink === 'home-nav'}
+                  className={`${isOnDarkBackground ? 'dark:text-white text-black' : 'dark:text-white text-black'}`}
+                />
+              </Link>
+            )}
             <Link 
               href="/about"
               className={`text-lg transition-colors duration-300`}
@@ -170,7 +190,7 @@ export default function Navigation() {
               <AnimatedText
                 text="About"
                 isHovered={hoveredLink === 'about'}
-                className={isOnDarkBackground ? 'text-white' : 'text-black'}
+                className={`${isOnDarkBackground ? 'dark:text-white text-black' : 'dark:text-white text-black'}`}
               />
             </Link>
             <Link 
@@ -182,7 +202,7 @@ export default function Navigation() {
               <AnimatedText
                 text="Projects"
                 isHovered={hoveredLink === 'projects'}
-                className={isOnDarkBackground ? 'text-white' : 'text-black'}
+                className={`${isOnDarkBackground ? 'dark:text-white text-black' : 'dark:text-white text-black'}`}
               />
             </Link>
             <button 
@@ -194,9 +214,11 @@ export default function Navigation() {
               <AnimatedText
                 text="Contact"
                 isHovered={hoveredLink === 'contact'}
-                className={isOnDarkBackground ? 'text-white' : 'text-black'}
+                className={`${isOnDarkBackground ? 'dark:text-white text-black' : 'dark:text-white text-black'}`}
               />
             </button>
+            
+            <ThemeToggle />
           </div>
         </div>
         
@@ -210,45 +232,62 @@ export default function Navigation() {
               exit="closed"
               variants={menuVariants}
             >
-              {/* Solid Black Background */}
-              <div className="absolute inset-0 bg-black" />
+              {/* Solid Background */}
+              <div className="absolute inset-0 bg-black dark:bg-black" />
               
               {/* Content Container */}
               <div className="relative flex-1 flex flex-col items-center justify-center px-6 py-10 overflow-auto">
                 <div className="w-full max-w-md space-y-10 py-10">
                   {/* Main Navigation Links */}
                   <motion.div className="space-y-8" variants={linkVariants}>
-                    <Link 
-                      href="/about"
-                      className="group flex items-center justify-between w-full px-4 py-4 rounded-xl text-3xl font-medium text-white hover:scale-105 transition-all duration-300"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      <span>About</span>
-                      <span className="transform group-hover:translate-x-1 transition-transform text-white/50">→</span>
-                    </Link>
-                    
-                    <motion.div variants={linkVariants}>
-                      <Link 
-                        href="/projects"
-                        className="group flex items-center justify-between w-full px-4 py-4 rounded-xl text-3xl font-medium text-white hover:scale-105 transition-all duration-300"
-                        onClick={() => setIsMobileMenuOpen(false)}
-                      >
-                        <span>Projects</span>
-                        <span className="transform group-hover:translate-x-1 transition-transform text-white/50">→</span>
-                      </Link>
-                    </motion.div>
-                    
-                    <motion.div variants={linkVariants}>
-                      <button 
-                        onClick={() => {
-                          openContact();
-                          setIsMobileMenuOpen(false);
-                        }}
-                        className="group flex items-center justify-between w-full px-4 py-4 rounded-xl text-3xl font-medium text-white hover:scale-105 transition-all duration-300"
-                      >
-                        <span>Contact</span>
-                        <span className="transform group-hover:translate-x-1 transition-transform text-white/50">→</span>
-                      </button>
+                    <motion.div className="flex flex-col space-y-1 py-2 mt-4">
+                      {pathname.includes('/casual') && (
+                        <motion.div variants={linkVariants}>
+                          <Link 
+                            href="/"
+                            className="group flex items-center justify-between w-full px-4 py-4 rounded-xl text-3xl font-medium text-white hover:scale-105 transition-all duration-300"
+                            onClick={() => setIsMobileMenuOpen(false)}
+                          >
+                            <span>Home</span>
+                            <span className="transform group-hover:translate-x-1 transition-transform text-white/50">→</span>
+                          </Link>
+                        </motion.div>
+                      )}
+                      
+                      <motion.div variants={linkVariants}>
+                        <Link 
+                          href="/about"
+                          className="group flex items-center justify-between w-full px-4 py-4 rounded-xl text-3xl font-medium text-white hover:scale-105 transition-all duration-300"
+                          onClick={() => setIsMobileMenuOpen(false)}
+                        >
+                          <span>About</span>
+                          <span className="transform group-hover:translate-x-1 transition-transform text-white/50">→</span>
+                        </Link>
+                      </motion.div>
+                      
+                      <motion.div variants={linkVariants}>
+                        <Link 
+                          href="/projects"
+                          className="group flex items-center justify-between w-full px-4 py-4 rounded-xl text-3xl font-medium text-white hover:scale-105 transition-all duration-300"
+                          onClick={() => setIsMobileMenuOpen(false)}
+                        >
+                          <span>Projects</span>
+                          <span className="transform group-hover:translate-x-1 transition-transform text-white/50">→</span>
+                        </Link>
+                      </motion.div>
+                      
+                      <motion.div variants={linkVariants}>
+                        <button 
+                          onClick={() => {
+                            openContact();
+                            setIsMobileMenuOpen(false);
+                          }}
+                          className="group flex items-center justify-between w-full px-4 py-4 rounded-xl text-3xl font-medium text-white hover:scale-105 transition-all duration-300"
+                        >
+                          <span>Contact</span>
+                          <span className="transform group-hover:translate-x-1 transition-transform text-white/50">→</span>
+                        </button>
+                      </motion.div>
                     </motion.div>
                   </motion.div>
                   

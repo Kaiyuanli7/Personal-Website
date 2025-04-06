@@ -6,9 +6,10 @@ import dynamic from 'next/dynamic'
 import { GlowingEffect } from "@/components/ui/glowing-effect"
 import Link from 'next/link'
 import Button from '@/components/ui/Button'
+import { useContact } from '@/context/ContactContext'
 
 // Dynamically import background
-const StarsBackground = dynamic(() => import('@/components/ui/StarsBackground'), {
+const SolidBackground = dynamic(() => import('@/components/ui/SolidBackground'), {
   ssr: false,
   loading: () => null,
 })
@@ -18,11 +19,14 @@ const StarsBackground = dynamic(() => import('@/components/ui/StarsBackground'),
 const projectPlaceholders = Array(12).fill("");
 
 export default function Projects() {
+  // Get the contact context to open the sidebar
+  const { openContact } = useContact()
+
   return (
-    <main className="min-h-screen bg-gray-950 relative overflow-hidden">
+    <main className="min-h-screen relative overflow-hidden transition-colors duration-300 dark:bg-dark-background bg-light-background">
       {/* Background elements */}
-      <div className="absolute inset-0 opacity-50">
-        <StarsBackground />
+      <div className="absolute inset-0">
+        <SolidBackground />
       </div>
       
       {/* Header section */}
@@ -32,7 +36,7 @@ export default function Projects() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
-            className="text-5xl md:text-7xl font-bold text-white mb-6 font-display"
+            className="text-5xl md:text-7xl font-bold dark:text-white text-light-foreground mb-6 font-display"
           >
             My Projects
           </motion.h1>
@@ -40,7 +44,7 @@ export default function Projects() {
             initial={{ scaleX: 0 }}
             animate={{ scaleX: 1 }}
             transition={{ duration: 1, delay: 0.5, ease: "easeInOut" }}
-            className="w-24 h-1 bg-white mx-auto"
+            className="w-24 h-1 dark:bg-gradient-accent-dark bg-gradient-accent-light mx-auto"
           />
         </div>
       </div>
@@ -65,7 +69,7 @@ export default function Projects() {
               transition={{ duration: 0.8, delay: 0.4 }}
               className="text-center mt-16 mb-8"
             >
-              <p className="text-white/80 text-lg max-w-2xl mx-auto">
+              <p className="dark:text-white/80 text-light-foreground/80 text-lg max-w-2xl mx-auto transition-colors duration-300">
                 These are placeholder cards for my upcoming projects. Check back soon for more details!
               </p>
             </motion.div>
@@ -80,7 +84,7 @@ export default function Projects() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="text-3xl md:text-4xl font-bold text-white mb-6 font-display"
+            className="text-3xl md:text-4xl font-bold dark:text-white text-light-foreground mb-6 font-display transition-colors duration-300"
           >
             Interested in Working Together?
           </motion.h2>
@@ -88,7 +92,7 @@ export default function Projects() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-xl text-white/80 max-w-2xl mx-auto mb-10"
+            className="text-xl dark:text-white/80 text-light-foreground/80 max-w-2xl mx-auto mb-10 transition-colors duration-300"
           >
             Let's build something amazing together
           </motion.p>
@@ -97,13 +101,13 @@ export default function Projects() {
             whileTap={{ scale: 0.95 }}
             className="inline-block"
           >
-            <Button href="/contact" size="lg">Contact Me</Button>
+            <Button onClick={openContact} size="lg">Contact Me</Button>
           </motion.div>
         </div>
       </div>
       
       {/* Gradient overlay at the bottom */}
-      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-gray-950 to-transparent z-0" />
+      <div className="absolute bottom-0 left-0 right-0 h-32 dark:bg-gradient-to-t dark:from-dark-background dark:to-transparent bg-gradient-to-t from-light-background to-transparent z-0 transition-colors duration-300" />
     </main>
   )
 }

@@ -21,29 +21,36 @@ a, button, input, textarea, select, [role="button"] {
   cursor: none !important;
 }
 
-
 /* Force cursor: none on the root */
 :root {
   cursor: none !important;
 }
 
+/* Light Theme Variables - Based on Nite Riot */
 :root {
-  --foreground: #171717;
-  --background: #ffffff;
+  --foreground: #1a1a1a; /* Dark text for contrast */
+  --background: #f7f7f2; /* Light cream/off-white background */
+  --accent: linear-gradient(90deg, #3b82f6, #8b5cf6); /* Blue to purple gradient */
+  --accent-solid: #3b82f6; /* Solid color fallback for contexts where gradient isn't supported */
+  --muted: #7c6f64;      /* Muted brown for secondary text */
+  
+  /* Additional color palette */
+  --red: #cc241d;
+  --green: #98971a;
+  --yellow: #d79921;
+  --blue: #458588;
+  --purple: #b16286;
+  --aqua: #689d6a;
+  --orange: #d65d0e;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-titillium);
-  --font-mono: var(--font-titillium);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground: #ededed;
-    --background: #0a0a0a;
-  }
+/* Dark Theme Variables */
+.dark {
+  --foreground: #ededed;
+  --background: #0a0a0a;
+  --accent: linear-gradient(90deg, #2563eb, #8b5cf6); /* Blue to purple gradient */
+  --accent-solid: #13FFAA; /* Solid color fallback for contexts where gradient isn't supported */
+  --muted: #888888;
 }
 
 body {
@@ -51,9 +58,23 @@ body {
   background: var(--background);
   min-height: 100vh;
   font-family: var(--font-titillium), sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* Hide footer on landing page */
 body.hide-footer footer {
   display: none;
+}
+
+/* Utility class for gradient backgrounds */
+.bg-accent-gradient {
+  background: var(--accent);
+}
+
+/* Utility class for gradient text */
+.text-accent-gradient {
+  background: var(--accent);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }

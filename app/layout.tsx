@@ -9,6 +9,7 @@ import Footer from "@/components/layout/Footer";
 import { ScrollProvider } from "@/context/ScrollContext";
 import { CursorProvider } from "@/context/CursorContext";
 import { ContactProvider } from "@/context/ContactContext";
+import { ThemeProvider } from "@/context/ThemeContext";
 import ScrollToTop from "./ScrollToTop";
 import { Analytics } from "@vercel/analytics/react";
 
@@ -55,20 +56,22 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${titillium.className} ${luxurious.variable} ${titillium.variable}`}>
-        <ScrollProvider>
-          <CursorProvider>
-            <ContactProvider>
-            <Cursor />
-            <CursorTrail />
-            <Navigation />
-            <main>{children}</main>
-            <Footer />
-            <SocialOverlay />
-            <ContactOverlay />
-            <ScrollToTop />
-            </ContactProvider>
-          </CursorProvider>
-        </ScrollProvider>
+        <ThemeProvider>
+          <ScrollProvider>
+            <CursorProvider>
+              <ContactProvider>
+                <Cursor />
+                <CursorTrail />
+                <Navigation />
+                <main className="transition-colors duration-300">{children}</main>
+                <Footer />
+                <SocialOverlay />
+                <ContactOverlay />
+                <ScrollToTop />
+              </ContactProvider>
+            </CursorProvider>
+          </ScrollProvider>
+        </ThemeProvider>
         <Analytics />
       </body>
     </html>

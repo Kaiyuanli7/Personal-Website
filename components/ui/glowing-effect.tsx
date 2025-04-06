@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useRef, useState, useEffect } from "react";
+import { useTheme } from "@/context/ThemeContext";
 
 interface GlowingEffectProps {
   spread?: number;
@@ -23,6 +24,7 @@ export function GlowingEffect({
   const [position, setPosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const [opacity, setOpacity] = useState(0);
   const [radius, setRadius] = useState(spread);
+  const { theme } = useTheme();
 
   useEffect(() => {
     if (disabled || !containerRef.current) return;
@@ -90,7 +92,11 @@ export function GlowingEffect({
       className={`pointer-events-none absolute inset-0 h-full w-full overflow-hidden rounded-2.5xl ${className}`}
     >
       <div
-        className={`pointer-events-none absolute rounded-full bg-gradient-to-tr from-blue-500/70 via-purple-500/60 to-pink-500/70 ${
+        className={`pointer-events-none absolute rounded-full transition-colors duration-300 ${
+          theme === "dark"
+            ? "bg-gradient-to-tr from-blue-600/70 via-indigo-500/60 to-purple-500/70" 
+            : "bg-gradient-to-tr from-blue-500/60 via-indigo-400/50 to-purple-400/50"
+        } ${
           glow ? "blur-3xl" : "blur-2xl"
         }`}
         style={{

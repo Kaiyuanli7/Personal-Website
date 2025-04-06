@@ -95,7 +95,7 @@ export const ThreeDMarquee = ({
                           duration: 0.4,
                           ease: "easeOut",
                         }}
-                        className="w-full h-full relative rounded-2xl border border-white/10 p-2 transition-all duration-300 hover:border-white/20"
+                        className="w-full h-full relative rounded-2xl border dark:border-white/10 border-light-accent/20 p-2 transition-all duration-300 dark:hover:border-white/20 hover:border-light-accent/30"
                         style={{
                           aspectRatio: "16/9",
                           perspective: "1000px",
@@ -109,10 +109,10 @@ export const ThreeDMarquee = ({
                           proximity={64}
                           inactiveZone={0.01}
                         />
-                        <div className="relative flex h-full flex-col justify-between overflow-hidden rounded-xl border-white/10 p-3 bg-black/40 backdrop-blur-sm">
+                        <div className="relative flex h-full flex-col justify-between overflow-hidden rounded-xl border-white/10 dark:bg-black/40 bg-white/70 backdrop-blur-sm transition-colors duration-300">
                           {/* Website-like header */}
-                          <div className="flex justify-between items-center mb-2 border-b border-white/20 pb-1">
-                            <div className="text-white font-bold text-sm">{projectTitle}</div>
+                          <div className="flex justify-between items-center mb-2 dark:border-white/20 border-light-foreground/20 border-b pb-1 transition-colors duration-300">
+                            <div className="dark:text-white text-light-foreground font-bold text-sm transition-colors duration-300">{projectTitle}</div>
                             <div className="flex space-x-1">
                               <div className="w-1.5 h-1.5 rounded-full bg-red-400"></div>
                               <div className="w-1.5 h-1.5 rounded-full bg-yellow-400"></div>
@@ -124,26 +124,26 @@ export const ThreeDMarquee = ({
                           <div className="flex-grow">
                             {/* Navigation bar */}
                             <div className="flex space-x-3 mb-2">
-                              <div className="bg-white/10 h-2 w-10 rounded-sm"></div>
-                              <div className="bg-white/10 h-2 w-8 rounded-sm"></div>
-                              <div className="bg-white/10 h-2 w-12 rounded-sm"></div>
+                              <div className="dark:bg-white/10 bg-light-foreground/10 h-2 w-10 rounded-sm transition-colors duration-300"></div>
+                              <div className="dark:bg-white/10 bg-light-foreground/10 h-2 w-8 rounded-sm transition-colors duration-300"></div>
+                              <div className="dark:bg-white/10 bg-light-foreground/10 h-2 w-12 rounded-sm transition-colors duration-300"></div>
                             </div>
                             
                             {/* Hero section */}
-                            <div className="bg-white/10 h-12 w-full rounded-sm mb-2"></div>
+                            <div className="dark:bg-white/10 bg-light-foreground/10 h-12 w-full rounded-sm mb-2 transition-colors duration-300"></div>
                             
                             {/* Content blocks */}
                             <div className="grid grid-cols-2 gap-2 mb-2">
-                              <div className="bg-white/10 h-8 rounded-sm"></div>
-                              <div className="bg-white/10 h-8 rounded-sm"></div>
+                              <div className="dark:bg-white/10 bg-light-foreground/10 h-8 rounded-sm transition-colors duration-300"></div>
+                              <div className="dark:bg-white/10 bg-light-foreground/10 h-8 rounded-sm transition-colors duration-300"></div>
                             </div>
                             
-                            <div className="bg-white/10 h-6 w-3/4 rounded-sm"></div>
+                            <div className="dark:bg-white/10 bg-light-foreground/10 h-6 w-3/4 rounded-sm transition-colors duration-300"></div>
                           </div>
                           
                           <div className="flex justify-between items-end mt-2">
-                            <div className="text-white/80 text-sm">Coming Soon</div>
-                            <div className="bg-white/20 rounded-full px-3 py-1 text-xs text-white">Project</div>
+                            <div className="dark:text-white/80 text-light-foreground/80 text-sm transition-colors duration-300">Coming Soon</div>
+                            <div className="dark:bg-white/20 bg-light-foreground/20 rounded-full px-3 py-1 text-xs dark:text-white text-light-foreground transition-colors duration-300">Project</div>
                           </div>
                         </div>
                       </motion.div>

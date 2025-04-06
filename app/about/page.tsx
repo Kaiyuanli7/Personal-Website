@@ -4,10 +4,10 @@ import { useEffect, useRef, useState } from 'react'
 import { motion, useScroll } from 'framer-motion'
 import { useScroll as useLenisScroll } from '@/context/ScrollContext'
 import ContentSection from '@/components/sections/ContentSection'
-import AboutNavigation from '@/app/AboutNavigation'
+import AboutNavigation from '@/components/layout/AboutNavigation'
 import dynamic from 'next/dynamic'
 
-const StarsBackground = dynamic(() => import('@/components/ui/StarsBackground'), {
+const SolidBackground = dynamic(() => import('@/components/ui/SolidBackground'), {
   ssr: false,
   loading: () => null
 })
@@ -104,10 +104,10 @@ export default function About() {
   return (
     <motion.div 
       ref={sectionRef}
-      className="min-h-screen bg-gray-950 relative"
+      className="min-h-screen relative transition-colors duration-300 dark:bg-dark-background bg-light-background"
     >
       <div className="absolute inset-0 z-0">
-        <StarsBackground />
+        <SolidBackground />
       </div>
       
       {/* AboutNavigation positioned independently of ContentSection */}

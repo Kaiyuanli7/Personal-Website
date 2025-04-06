@@ -209,11 +209,11 @@ export default function AboutNavigation({
   }, [activeSection, isScrolling, isProgrammaticJump, setActiveSection]);
 
   return (
-    <div className={`fixed top-16 md:top-4 left-1/2 -translate-x-1/2 z-50 w-auto mx-auto transition-all duration-500 ${
+    <div className={`fixed top-3 md:top-4 left-1/2 -translate-x-1/2 z-[100] w-auto mx-auto transition-all duration-500 ${
       isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-full'
     }`}>
       <motion.div 
-        className="relative rounded-full border border-white/10 p-1 bg-black/40 backdrop-blur-sm shadow-lg will-change-transform"
+        className="relative rounded-full border dark:border-white/10 border-light-accent/20 p-1 dark:bg-black/40 bg-white/70 backdrop-blur-sm shadow-lg will-change-transform transition-colors duration-300"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.2 }}
@@ -239,7 +239,7 @@ export default function AboutNavigation({
               {activeSection === item.id && (
                 <>
                   <motion.div 
-                    className="absolute inset-0 bg-white/10 rounded-full"
+                    className="absolute inset-0 dark:bg-white/10 bg-black/5 rounded-full transition-colors duration-300"
                     layoutId="activeSection"
                     transition={{ 
                       type: "spring", 
@@ -249,7 +249,7 @@ export default function AboutNavigation({
                     }}
                   />
                   <motion.div 
-                    className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-full mx-3"
+                    className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-accent-dark dark:bg-gradient-accent-dark bg-gradient-accent-light rounded-full mx-3 transition-colors duration-300"
                     initial={{ scaleX: 0 }}
                     animate={{ scaleX: isProgrammaticJump ? 0 : 1 }}
                     style={{ 
@@ -276,14 +276,14 @@ export default function AboutNavigation({
               )}
               <button 
                 onClick={(event) => handleNavClick(item.id, event)}
-                className={`relative px-3 md:px-6 py-2 md:py-3 transition-all duration-300 rounded-full w-full outline-none focus:outline-none
-                  ${activeSection === item.id ? 'text-white' : 'text-white/60 hover:text-white/80'}`}
+                className={`relative px-2 sm:px-3 md:px-6 py-1.5 sm:py-2 md:py-3 transition-all duration-300 rounded-full w-full outline-none focus:outline-none
+                  ${activeSection === item.id ? 'dark:text-white text-light-foreground' : 'dark:text-white/60 text-light-foreground/60 dark:hover:text-white/80 hover:text-light-foreground/80'} transition-colors duration-300`}
                 aria-label={`Navigate to ${item.label} section`}
                 type="button"
               >
                 <div className={`flex items-center space-x-1 md:space-x-2 ${activeSection === item.id ? 'transform scale-105' : 'hover:scale-105'} transition-transform duration-300`}>
                   <span className="transition-transform duration-300">{item.icon}</span>
-                  <span className="font-medium text-xs md:text-sm">{item.label}</span>
+                  <span className="font-medium text-[10px] xs:text-xs md:text-sm whitespace-nowrap">{item.label}</span>
                 </div>
               </button>
             </div>

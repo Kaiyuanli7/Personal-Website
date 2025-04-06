@@ -129,7 +129,7 @@ export default function ContactOverlay() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.5, ease: "easeInOut" }}
-            className="fixed inset-0 bg-black/70 backdrop-blur-md z-50"
+            className="fixed inset-0 dark:bg-black/70 bg-gray-800/50 backdrop-blur-md z-50 transition-colors duration-300"
             onClick={closeContact}
           />
           
@@ -146,7 +146,7 @@ export default function ContactOverlay() {
               mass: 1,
               opacity: { duration: 0.4 }
             }}
-            className="fixed top-0 right-0 h-full w-full sm:w-[550px] md:w-[650px] lg:w-[750px] bg-gray-950 z-50 overflow-y-auto overflow-x-hidden shadow-xl"
+            className="fixed top-0 right-0 h-full w-full sm:w-[550px] md:w-[650px] lg:w-[750px] dark:bg-gray-950 bg-gray-100 z-50 overflow-y-auto overflow-x-hidden shadow-xl transition-colors duration-300"
           >
             {/* Content container with smooth reveal animations */}
             <motion.div 
@@ -158,11 +158,11 @@ export default function ContactOverlay() {
               {/* Close button */}
               <motion.button 
                 onClick={closeContact}
-                className="absolute top-6 right-6 md:top-8 md:right-8 text-white hover:text-white/70 transition-colors"
+                className="absolute top-6 right-6 md:top-8 md:right-8 dark:text-white text-light-foreground hover:text-white/70 transition-colors"
                 aria-label="Close contact overlay"
                 whileHover={{ scale: 1.1, rotate: 90 }}
                 whileTap={{ scale: 0.9 }}
-                transition={{ duration: 0.2 }}
+                transition={{ type: "tween", duration: 0.15 }}
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -176,7 +176,7 @@ export default function ContactOverlay() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, ease: "easeOut" }}
-                  className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-3 font-display"
+                  className="text-4xl md:text-5xl lg:text-6xl font-bold dark:text-white text-light-foreground mb-3 font-display transition-colors duration-300"
                 >
                   Get in Touch
                 </motion.h1>
@@ -184,7 +184,7 @@ export default function ContactOverlay() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-                  className="text-lg text-white/80 max-w-xl"
+                  className="text-lg dark:text-white/80 text-light-foreground/80 max-w-xl transition-colors duration-300"
                 >
                   Have a project in mind or want to discuss potential opportunities? I'd love to hear from you.
                 </motion.p>
@@ -192,23 +192,23 @@ export default function ContactOverlay() {
                   initial={{ scaleX: 0 }}
                   animate={{ scaleX: 1 }}
                   transition={{ duration: 1, delay: 0.5, ease: "easeInOut" }}
-                  className="w-32 h-1 bg-white mt-4"
+                  className="w-32 h-1 dark:bg-white bg-light-accent mt-4 transition-colors duration-300"
                   style={{ background: gradientBackground }}
                 />
               </div>
               
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {/* Contact Form */}
                 <motion.div 
-                  className="space-y-8 mb-12 lg:mb-0"
+                  className="space-y-8"
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.3 }}
                 >
                   <motion.div 
-                    className="relative rounded-2xl border border-white/10 p-2 transition-all duration-300 hover:border-white/20"
+                    className="relative rounded-2xl border dark:border-white/10 border-light-accent/20 p-2 transition-all duration-300 dark:hover:border-white/20 hover:border-light-accent/30"
                     whileHover={{ y: -5 }}
-                    transition={{ duration: 0.4 }}
+                    transition={{ type: "tween", duration: 0.2 }}
                   >
                     <GlowingEffect
                       spread={40}
@@ -217,8 +217,8 @@ export default function ContactOverlay() {
                       proximity={64}
                       inactiveZone={0.01}
                     />
-                    <div className="relative rounded-xl border-white/10 p-6 md:p-8 bg-black/40 backdrop-blur-sm">
-                      <h2 className="text-2xl font-bold text-white mb-6 font-display">Send a Message</h2>
+                    <div className="relative rounded-xl border-white/10 p-6 md:p-8 dark:bg-black/40 bg-white/60 backdrop-blur-sm transition-colors duration-300">
+                      <h2 className="text-2xl font-bold dark:text-white text-light-foreground mb-6 font-display transition-colors duration-300">Send a Message</h2>
                       
                       <form onSubmit={handleSubmit} className="space-y-5">
                         <motion.div 
@@ -227,14 +227,14 @@ export default function ContactOverlay() {
                           animate="visible"
                           variants={formVariants}
                         >
-                          <label htmlFor="name" className="block text-white/80 font-medium mb-2">Name</label>
+                          <label htmlFor="name" className="block dark:text-white/80 text-light-foreground/80 font-medium mb-2 transition-colors duration-300">Name</label>
                           <input
                             type="text"
                             id="name"
                             name="name"
                             value={formState.name}
                             onChange={handleInputChange}
-                            className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white placeholder:text-white/40 focus:outline-none focus:border-white/30 focus:ring-1 focus:ring-white/30 transition-colors"
+                            className="w-full dark:bg-white/5 bg-white/80 dark:border-white/10 border-light-foreground/20 rounded-lg px-4 py-3 dark:text-white text-light-foreground placeholder:dark:text-white/40 placeholder:text-light-foreground/50 focus:outline-none focus:dark:border-white/30 focus:border-light-accent/50 focus:ring-1 focus:dark:ring-white/30 focus:ring-light-accent/50 transition-colors"
                             placeholder="Your Name"
                             disabled={formStatus === 'submitting'}
                             required
@@ -247,14 +247,14 @@ export default function ContactOverlay() {
                           animate="visible"
                           variants={formVariants}
                         >
-                          <label htmlFor="email" className="block text-white/80 font-medium mb-2">Email</label>
+                          <label htmlFor="email" className="block dark:text-white/80 text-light-foreground/80 font-medium mb-2 transition-colors duration-300">Email</label>
                           <input
                             type="email"
                             id="email"
                             name="email"
                             value={formState.email}
                             onChange={handleInputChange}
-                            className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white placeholder:text-white/40 focus:outline-none focus:border-white/30 focus:ring-1 focus:ring-white/30 transition-colors"
+                            className="w-full dark:bg-white/5 bg-white/80 dark:border-white/10 border-light-foreground/20 rounded-lg px-4 py-3 dark:text-white text-light-foreground placeholder:dark:text-white/40 placeholder:text-light-foreground/50 focus:outline-none focus:dark:border-white/30 focus:border-light-accent/50 focus:ring-1 focus:dark:ring-white/30 focus:ring-light-accent/50 transition-colors"
                             placeholder="your.email@example.com"
                             disabled={formStatus === 'submitting'}
                             required
@@ -267,14 +267,14 @@ export default function ContactOverlay() {
                           animate="visible"
                           variants={formVariants}
                         >
-                          <label htmlFor="message" className="block text-white/80 font-medium mb-2">Message</label>
+                          <label htmlFor="message" className="block dark:text-white/80 text-light-foreground/80 font-medium mb-2 transition-colors duration-300">Message</label>
                           <textarea
                             id="message"
                             name="message"
                             value={formState.message}
                             onChange={handleInputChange}
                             rows={5}
-                            className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white placeholder:text-white/40 focus:outline-none focus:border-white/30 focus:ring-1 focus:ring-white/30 transition-colors resize-none"
+                            className="w-full dark:bg-white/5 bg-white/80 dark:border-white/10 border-light-foreground/20 rounded-lg px-4 py-3 dark:text-white text-light-foreground placeholder:dark:text-white/40 placeholder:text-light-foreground/50 focus:outline-none focus:dark:border-white/30 focus:border-light-accent/50 focus:ring-1 focus:dark:ring-white/30 focus:ring-light-accent/50 transition-colors resize-none"
                             placeholder="Tell me about your project or inquiry..."
                             disabled={formStatus === 'submitting'}
                             required
@@ -287,7 +287,7 @@ export default function ContactOverlay() {
                           animate="visible"
                           variants={formVariants}
                         >
-                          <div className="relative inline-block w-full rounded-2xl border border-white/10 p-2 transition-all duration-300 hover:border-white/20">
+                          <div className="relative inline-block w-full rounded-2xl border dark:border-white/10 border-light-accent/20 p-2 transition-all duration-300 dark:hover:border-white/20 hover:border-light-accent/30">
                             <GlowingEffect
                               spread={40}
                               glow={true}
@@ -298,14 +298,15 @@ export default function ContactOverlay() {
                             <motion.button
                               whileHover={{ scale: 1.02 }}
                               whileTap={{ scale: 0.98 }}
+                              transition={{ type: "tween", duration: 0.15 }}
                               type="submit"
                               disabled={formStatus === 'submitting' || formStatus === 'success'}
-                              className={`w-full py-3 rounded-xl border-white/10 backdrop-blur-sm text-white font-medium transition-all ${
+                              className={`w-full py-3 rounded-xl border-white/10 backdrop-blur-sm dark:text-white text-light-foreground font-medium transition-all ${
                                 formStatus === 'success' 
                                   ? 'bg-green-500/20' 
                                   : formStatus === 'submitting'
-                                    ? 'bg-black/40 opacity-70'
-                                    : 'bg-black/40'
+                                    ? 'dark:bg-black/40 bg-white/40 opacity-70'
+                                    : 'dark:bg-black/40 bg-white/40'
                               }`}
                             >
                               {formStatus === 'idle' && 'Send Message'}
@@ -322,15 +323,15 @@ export default function ContactOverlay() {
                 
                 {/* Contact Information */}
                 <motion.div 
-                  className="space-y-6 pb-8"
+                  className="space-y-6"
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.5 }}
                 >
                   <motion.div 
-                    className="relative rounded-2xl border border-white/10 p-2 transition-all duration-300 hover:border-white/20"
+                    className="relative rounded-2xl border dark:border-white/10 border-light-accent/20 p-2 transition-all duration-300 dark:hover:border-white/20 hover:border-light-accent/30"
                     whileHover={{ y: -5 }}
-                    transition={{ duration: 0.4 }}
+                    transition={{ type: "tween", duration: 0.2 }}
                   >
                     <GlowingEffect
                       spread={40}
@@ -339,16 +340,16 @@ export default function ContactOverlay() {
                       proximity={64}
                       inactiveZone={0.01}
                     />
-                    <div className="relative rounded-xl border-white/10 p-6 md:p-8 bg-black/40 backdrop-blur-sm">
-                      <h2 className="text-2xl font-bold text-white mb-6 font-display">Contact Info</h2>
-                      <div className="space-y-3 max-h-[60vh] overflow-y-auto overflow-x-hidden pr-2">
+                    <div className="relative rounded-xl border-white/10 p-6 md:p-8 dark:bg-black/40 bg-white/60 backdrop-blur-sm transition-colors duration-300">
+                      <h2 className="text-2xl font-bold dark:text-white text-light-foreground mb-6 font-display transition-colors duration-300">Contact Info</h2>
+                      <div className="space-y-4 max-h-[60vh] overflow-y-auto overflow-x-hidden pr-2">
                         {contactMethods.map((method, index) => (
                           <motion.div
                             key={method.title}
                             initial={{ opacity: 0, x: 10 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ delay: 0.6 + (index * 0.1), duration: 0.6 }}
-                            className="relative rounded-2xl border border-white/10 p-1 transition-all duration-300 hover:border-white/20 overflow-hidden"
+                            className="relative rounded-2xl border dark:border-white/10 border-light-accent/20 p-1 transition-all duration-300 dark:hover:border-white/20 hover:border-light-accent/30 overflow-hidden"
                           >
                             <GlowingEffect
                               spread={40}
@@ -361,17 +362,18 @@ export default function ContactOverlay() {
                               href={method.link}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="flex items-center group relative rounded-xl border-white/10 p-2 bg-black/40 backdrop-blur-sm"
+                              className="flex items-center group relative rounded-xl border-white/10 p-3 md:p-4 dark:bg-black/40 bg-white/60 backdrop-blur-sm transition-colors duration-300"
                               whileHover={{ x: 5 }}
+                              transition={{ type: "tween", duration: 0.15 }}
                             >
-                              <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-lg mr-3">
+                              <div className="flex-shrink-0 w-10 h-10 rounded-full dark:bg-white/10 bg-light-accent/10 flex items-center justify-center text-lg mr-4 transition-colors duration-300">
                                 {method.icon}
                               </div>
-                              <div>
-                                <h3 className="text-white font-medium text-sm">
+                              <div className="flex-grow min-w-0">
+                                <h3 className="dark:text-white text-light-foreground font-medium text-sm transition-colors duration-300">
                                   {method.title}
                                 </h3>
-                                <p className="text-white/70 group-hover:text-white/90 transition-colors text-xs">
+                                <p className="dark:text-white/70 text-light-foreground/70 group-hover:dark:text-white/90 group-hover:text-light-foreground/90 transition-colors text-xs truncate">
                                   {method.value}
                                 </p>
                               </div>
@@ -379,27 +381,6 @@ export default function ContactOverlay() {
                           </motion.div>
                         ))}
                       </div>
-                    </div>
-                  </motion.div>
-                  
-                  <motion.div
-                    className="relative rounded-2xl border border-white/10 p-1 transition-all duration-300 hover:border-white/20"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.7, duration: 0.6 }}
-                    whileHover={{ y: -5 }}
-                  >
-                    <GlowingEffect
-                      spread={40}
-                      glow={true}
-                      disabled={false}
-                      proximity={64}
-                      inactiveZone={0.01}
-                    />
-                    <div className="relative rounded-xl border-white/10 p-4 bg-black/40 backdrop-blur-sm">
-                      <h2 className="text-lg font-bold text-white mb-2 font-display">Location</h2>
-                      <p className="text-white/70 text-sm mb-1">San Jose, California</p>
-                      <p className="text-white/70 text-sm">Available for remote work and collaborations worldwide</p>
                     </div>
                   </motion.div>
                 </motion.div>
