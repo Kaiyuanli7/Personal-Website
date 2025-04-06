@@ -5,7 +5,7 @@ import { motion, useMotionValue, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { GlowingEffect } from "@/components/ui/glowing-effect"
-import { Box, Palette, Laptop, Sparkles, Code } from "lucide-react"
+import { Box, Palette, Laptop, Sparkles, Code, ArrowRight } from "lucide-react"
 import dynamic from 'next/dynamic'
 
 const SolidBackground = dynamic(() => import('@/components/ui/SolidBackground'), {
@@ -28,7 +28,7 @@ export default function LandingPage() {
   useEffect(() => {
     // Prefetch the portfolio pages for faster navigation
     router.prefetch('/professional')
-    router.prefetch('/casual')
+    router.prefetch('/home')
     
     // Add class to body to hide footer
     document.body.classList.add('hide-footer')
@@ -109,10 +109,10 @@ export default function LandingPage() {
                     <GridItem
                       area="md:[grid-area:1/7/3/13]"
                       icon={<Palette className="h-4 w-4 dark:text-white text-light-foreground" />}
-                      title="Casual"
+                      title="Home"
                       description="An experimental, interactive experience with modern animations and creative design elements."
-                      href="/casual"
-                      buttonText="View Casual →"
+                      href="/home"
+                      buttonText="View Home →"
                     />
                     
 
@@ -139,8 +139,15 @@ interface GridItemProps {
 const GridItem = ({ area, icon, title, description, href, buttonText }: GridItemProps) => {
   return (
     <li className={`min-h-[14rem] list-none ${area}`}>
-      <Link href={href} className="block h-full">
-        <div className="relative h-full rounded-2xl border dark:border-white/10 border-light-accent/20 p-2 transition-all duration-300 dark:hover:border-white/20 hover:border-light-accent/30">
+      <Link href={href} className="block h-full group">
+        <motion.div 
+          className="relative h-full rounded-2xl border dark:border-white/10 border-light-accent/20 p-2 transition-colors duration-300 dark:hover:border-white/20 hover:border-light-accent/30"
+          whileHover={{ 
+            y: -5, 
+            boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)"
+          }}
+          transition={{ type: "spring", stiffness: 400, damping: 17 }}
+        >
           <GlowingEffect
             spread={40}
             glow={true}
@@ -161,12 +168,13 @@ const GridItem = ({ area, icon, title, description, href, buttonText }: GridItem
                   {description}
                 </p>
               </div>
-              <div className="dark:text-white/80 text-light-foreground/80 dark:hover:text-white hover:text-light-foreground text-sm font-medium transition-colors">
-                {buttonText}
+              <div className="dark:text-white/80 text-light-foreground/80 dark:hover:text-white hover:text-light-foreground text-sm font-medium transition-colors flex items-center">
+                <span className="mr-2">{buttonText.replace(" →", "")}</span>
+                <span className="arrow-animate text-gradient-light dark:text-gradient-dark font-bold text-lg">→</span>
               </div>
             </div>
           </div>
-        </div>
+        </motion.div>
       </Link>
     </li>
   );

@@ -9,7 +9,6 @@ import Image from 'next/image'
 import { CodeCard } from '@/components/ui/CodeCard'
 import { GlowingEffect } from "@/components/ui/glowing-effect"
 import { Box, Palette, Laptop, Sparkles, Code, User, Briefcase } from "lucide-react"
-import './no-scrollbar.css'
 import AboutNavigation from "@/components/layout/AboutNavigation"
 
 gsap.registerPlugin(ScrollTrigger)

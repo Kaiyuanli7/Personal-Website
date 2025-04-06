@@ -79,7 +79,7 @@ body.hide-footer footer {
   color: transparent;
 }
 
-/* Hover ring gradient utilities */
+/* Focus ring gradient utilities */
 .hover\:ring-gradient-light {
   position: relative;
 }
@@ -114,3 +114,25 @@ body.hide-footer footer {
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
 }
+
+/* Arrow animation for clickable items */
+@keyframes arrowMove {
+  0% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(5px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.arrow-animate {
+  display: inline-block;
+  animation: arrowMove 2s infinite ease-in-out;
+}
+
+.group:hover .arrow-animate {
+  animation: arrowMove 1s infinite ease-in-out;
+} 

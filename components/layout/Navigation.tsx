@@ -166,21 +166,19 @@ export default function Navigation() {
           
           {/* Desktop navigation */}
           <div className="hidden md:flex flex-1 items-center justify-end gap-8">
-            {/* Home link - only show on casual page */}
-            {pathname === '/casual' && (
-              <Link 
-                href="/"
-                className={`text-lg transition-colors duration-300`}
-                onMouseEnter={() => setHoveredLink('home-nav')}
-                onMouseLeave={() => setHoveredLink(null)}
-              >
-                <AnimatedText
-                  text="Home"
-                  isHovered={hoveredLink === 'home-nav'}
-                  className={`${isOnDarkBackground ? 'dark:text-white text-black' : 'dark:text-white text-black'}`}
-                />
-              </Link>
-            )}
+            {/* Home link - show on all pages */}
+            <Link 
+              href="/home"
+              className={`text-lg transition-colors duration-300`}
+              onMouseEnter={() => setHoveredLink('home-nav')}
+              onMouseLeave={() => setHoveredLink(null)}
+            >
+              <AnimatedText
+                text="Home"
+                isHovered={hoveredLink === 'home-nav'}
+                className={`${isOnDarkBackground ? 'dark:text-white text-black' : 'dark:text-white text-black'}`}
+              />
+            </Link>
             <Link 
               href="/about"
               className={`text-lg transition-colors duration-300`}
@@ -241,18 +239,16 @@ export default function Navigation() {
                   {/* Main Navigation Links */}
                   <motion.div className="space-y-8" variants={linkVariants}>
                     <motion.div className="flex flex-col space-y-1 py-2 mt-4">
-                      {pathname.includes('/casual') && (
-                        <motion.div variants={linkVariants}>
-                          <Link 
-                            href="/"
-                            className="group flex items-center justify-between w-full px-4 py-4 rounded-xl text-3xl font-medium text-white hover:scale-105 transition-all duration-300"
-                            onClick={() => setIsMobileMenuOpen(false)}
-                          >
-                            <span>Home</span>
-                            <span className="transform group-hover:translate-x-1 transition-transform text-white/50">→</span>
-                          </Link>
-                        </motion.div>
-                      )}
+                      <motion.div variants={linkVariants}>
+                        <Link 
+                          href="/home"
+                          className="group flex items-center justify-between w-full px-4 py-4 rounded-xl text-3xl font-medium text-white hover:scale-105 transition-all duration-300"
+                          onClick={() => setIsMobileMenuOpen(false)}
+                        >
+                          <span>Home</span>
+                          <span className="transform group-hover:translate-x-1 transition-transform text-white/50">→</span>
+                        </Link>
+                      </motion.div>
                       
                       <motion.div variants={linkVariants}>
                         <Link 
