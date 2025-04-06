@@ -30,9 +30,6 @@ export default function LandingPage() {
     router.prefetch('/professional')
     router.prefetch('/home')
     
-    // Add class to body to hide footer
-    document.body.classList.add('hide-footer')
-    
     if (typeof window !== 'undefined') {
       setWindowHeight(window.innerHeight)
       
@@ -47,8 +44,6 @@ export default function LandingPage() {
       return () => {
         window.removeEventListener('resize', handleResize)
         clearTimeout(timer)
-        // Remove class when component unmounts
-        document.body.classList.remove('hide-footer')
       }
     }
   }, [router])

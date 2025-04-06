@@ -11,7 +11,6 @@ import { ScrollProvider } from "@/context/ScrollContext";
 import { CursorProvider } from "@/context/CursorContext";
 import { ContactProvider } from "@/context/ContactContext";
 import { ThemeProvider } from "@/context/ThemeContext";
-import ScrollToTop from "@/components/layout/ScrollToTop";
 import { Analytics } from "@vercel/analytics/react";
 
 // Dynamically import non-critical UI components
@@ -31,6 +30,11 @@ const SocialOverlay = dynamic(() => import('@/components/ui/SocialOverlay'), {
 const ContactOverlay = dynamic(() => import('@/components/ui/ContactOverlay'), {
   ssr: false,
   loading: () => <div className="hidden">Loading contact form...</div>,
+});
+
+// Import client component for footer visibility
+const FooterController = dynamic(() => import('./client'), {
+  ssr: true
 });
 
 const titillium = Titillium_Web({ 
@@ -61,6 +65,7 @@ export default function RootLayout({
           <ScrollProvider>
             <CursorProvider>
               <ContactProvider>
+                <FooterController />
                 <Cursor />
                 <CursorTrail />
                 <Navigation />
@@ -68,7 +73,6 @@ export default function RootLayout({
                 <Footer />
                 <SocialOverlay />
                 <ContactOverlay />
-                <ScrollToTop />
               </ContactProvider>
             </CursorProvider>
           </ScrollProvider>
