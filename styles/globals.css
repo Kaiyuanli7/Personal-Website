@@ -11,6 +11,28 @@ html, body, * {
   user-select: none;
 }
 
+/* Prevent horizontal scroll while maintaining parallax effects */
+html {
+  overflow-x: hidden;
+}
+
+body {
+  width: 100vw;
+  position: relative;
+  color: var(--foreground);
+  background: var(--background);
+  min-height: 100vh;
+  font-family: var(--font-titillium), sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Ensure main content doesn't cause horizontal overflow */
+main {
+  width: 100%;
+  position: relative;
+  overflow-x: clip;
+}
+
 /* Ensure interactive elements don't show default cursor */
 a, button, input, textarea, select, [role="button"] {
   cursor: none !important;
@@ -51,14 +73,6 @@ a, button, input, textarea, select, [role="button"] {
   --accent: linear-gradient(90deg, #2563eb, #8b5cf6); /* Blue to purple gradient */
   --accent-solid: #13FFAA; /* Solid color fallback for contexts where gradient isn't supported */
   --muted: #888888;
-}
-
-body {
-  color: var(--foreground);
-  background: var(--background);
-  min-height: 100vh;
-  font-family: var(--font-titillium), sans-serif;
-  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* Hide footer on landing page */

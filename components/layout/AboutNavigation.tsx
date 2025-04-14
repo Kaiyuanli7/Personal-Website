@@ -89,7 +89,7 @@ export default function AboutNavigation({
           } else if (sectionId === 'what-i-do-section') {
             offset = 0;
           } else if (sectionId === 'capabilities-section') {
-            offset = 0;
+            offset = 130;
           }
           
           console.log(`Scrolling to section with offset: ${offset}`);

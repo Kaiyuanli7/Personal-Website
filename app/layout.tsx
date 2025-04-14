@@ -69,7 +69,7 @@ export default function RootLayout({
                 <Cursor />
                 <CursorTrail />
                 <Navigation />
-                <main className="transition-colors duration-300">{children}</main>
+                <main className="transition-colors duration-300 relative w-full">{children}</main>
                 <Footer />
                 <SocialOverlay />
                 <ContactOverlay />
